@@ -1,0 +1,150 @@
+/*
+ *     SPDX-License-Identifier: AGPL-3.0-only
+ *
+ *     Copyright (C) 2021 EldoriaRPG Team and Contributor
+ */
+
+package de.eldoria.schematictools.configuration.elements;
+
+import de.eldoria.eldoutilities.localization.MessageComposer;
+import de.eldoria.eldoutilities.serialization.SerializationUtil;
+import de.eldoria.schematicbrush.storage.Storage;
+import de.eldoria.schematicbrush.storage.brush.Brush;
+import de.eldoria.schematicbrush.util.Colors;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
+public class Tool implements ConfigurationSerializable {
+    private static final UUID GLOBAL = new UUID(0L, 0L);
+    /**
+     * The owner of the underlying brush
+     */
+    private UUID owner;
+    /**
+     * The name of this brush tool
+     */
+    private String name;
+    /**
+     * The name of the underlying brush
+     */
+    private String brushName;
+    /**
+     * The unique numeric id of the brush
+     */
+    private final int id;
+    private String permission;
+    private int usages;
+
+    public Tool(UUID owner, String name, String brushName, int id, String permission, int usages) {
+        this.owner = owner;
+        this.name = name;
+        this.brushName = brushName;
+        this.id = id;
+        this.permission = permission;
+        this.usages = usages;
+    }
+
+    public Tool(Map<String, Object> objectMap) {
+        var map = SerializationUtil.mapOf(objectMap);
+        owner = UUID.fromString(map.getValue("owner"));
+        brushName = map.getValue("brushName");
+        id = map.getValue("id");
+        permission = map.getValue("permission");
+        usages = map.getValue("usages");
+    }
+
+    @Override
+    @NotNull
+    public Map<String, Object> serialize() {
+        return SerializationUtil.newBuilder()
+                .add("owner", owner.toString())
+                .add("brushName", brushName)
+                .add("id", id)
+                .add("permission", permission)
+                .add("usages", usages)
+                .build();
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public void name(String name) {
+        this.name = name;
+    }
+
+    public void brush(UUID owner, Brush brush) {
+        this.owner = owner;
+        brushName = brush.name();
+    }
+
+    public int id() {
+        return id;
+    }
+
+    public String permission() {
+        return permission;
+    }
+
+    public void permission(String permission) {
+        this.permission = permission;
+    }
+
+    public int usages() {
+        return usages;
+    }
+
+    public boolean hasUsage() {
+        return usages != -1;
+    }
+
+    public void usages(int usages) {
+        this.usages = usages;
+    }
+
+    public boolean hasPermission(Player player) {
+        if (permission == null) return true;
+        return player.hasPermission(permission);
+    }
+
+    public CompletableFuture<Optional<Brush>> getBrush(Storage storage) {
+        if (owner.equals(GLOBAL)) {
+            return storage.brushes().globalContainer().get(brushName);
+        }
+        return storage.brushes().playerContainer(owner).get(brushName);
+    }
+
+    public String asComponent() {
+        var base = "/schematicTools modify ";
+
+        return MessageComposer.create()
+                .text("<%s>%s", Colors.HEADING, name)
+                .newLine()
+                .text("<%s>Brush: <%s>%s", Colors.NAME, Colors.VALUE, brushName)
+                .text("<%s><click:suggest_command:'%s %s brushName '>[Change]</click>", Colors.CHANGE, base, name)
+                .newLine()
+                .text("<%s>Brush Owner: <%s>%s", Colors.NAME, Colors.VALUE, hasGlobalBrush() ? "global" : owner)
+                .newLine()
+                .text("<%s>Permission: <%s>%s", Colors.NAME, Colors.VALUE, permission)
+                .text("<%s><click:suggest_command:'%s %s permission '>[Change]</click>", Colors.CHANGE, base, name)
+                .newLine()
+                .text("<%s>Usages: <%s> %s", Colors.NAME, Colors.VALUE, hasUsage() ? usages : "Unlimited")
+                .text("<%s><click:suggest_command:'%s %s usages '>[Change]</click>", Colors.CHANGE, base, name)
+                .build();
+    }
+
+    public boolean hasGlobalBrush() {
+        return owner.equals(GLOBAL);
+    }
+
+    @Override
+    public String toString() {
+        return "Tool{owner=%s, name='%s', brushName='%s', id=%d}".formatted(owner, name, brushName, id);
+    }
+}

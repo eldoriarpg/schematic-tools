@@ -4,6 +4,7 @@ plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("de.chojo.publishdata") version "1.0.4"
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
     java
     `maven-publish`
 }
@@ -17,8 +18,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.1.8-SNAPSHOT")
-    compileOnly("org.spigotmc", "spigot-api", "1.13.2-R0.1-SNAPSHOT")
+    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.2.2-SNAPSHOT")
+    compileOnly("org.spigotmc", "spigot-api", "1.14.4-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.2.10")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
@@ -110,5 +111,19 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+}
+
+bukkit {
+    main = "de.eldoria.schematictools.SchematicTools"
+    apiVersion = "1.14"
+    authors = listOf("RainbowDashLabs")
+    depend = listOf("SchematicBrushReborn")
+
+    commands {
+        register("schematicTools") {
+            description = "Base command of schematic tools"
+            permission = "schematictools"
+        }
     }
 }
