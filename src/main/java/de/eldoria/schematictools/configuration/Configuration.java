@@ -12,7 +12,7 @@ import de.eldoria.schematictools.configuration.elements.Tools;
 import org.bukkit.plugin.Plugin;
 
 public class Configuration extends EldoConfig {
-    private Tools tools = new Tools();
+    private Tools tools;
 
     public Configuration(Plugin plugin) {
         super(plugin);

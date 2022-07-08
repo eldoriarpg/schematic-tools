@@ -43,7 +43,7 @@ public class Create extends AdvancedCommand implements IPlayerTabExecutor {
                 .addUnlocalizedArgument("-p permission.node", false)
                 .addUnlocalizedArgument("-u usages", false)
                 .addUnlocalizedArgument("-o owner", false)
-                .withPermission(Permissions.USE)
+                .withPermission(Permissions.MANAGE)
                 .build());
         this.sbr = sbr;
         this.configuration = configuration;
@@ -91,16 +91,6 @@ public class Create extends AdvancedCommand implements IPlayerTabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
         args.parseQuoted();
-        if (args.sizeIs(1)) {
-            var name = args.get(0).asString();
-            CommandAssertions.isFalse(configuration.tools().byName(name).isPresent(), "Name is already taken.");
-            return TabCompleteUtil.completeFreeInput(name, 32, "name");
-        }
-
-        if (args.sizeIs(2)) {
-            return sbr.storageRegistry().activeStorage().brushes().complete(player, args.get(1).asString());
-        }
-
         if ("p".equalsIgnoreCase(args.flags().lastFlag())) {
             return Collections.singletonList("permission");
         }
@@ -111,6 +101,16 @@ public class Create extends AdvancedCommand implements IPlayerTabExecutor {
 
         if ("o".equalsIgnoreCase(args.flags().lastFlag())) {
             return TabCompleteUtil.completePlayers(args.flags().getIfPresent("o").map(Input::asString).orElse(""));
+        }
+
+        if (args.sizeIs(1)) {
+            var name = args.get(0).asString();
+            CommandAssertions.isFalse(configuration.tools().byName(name).isPresent(), "Name is already taken.");
+            return TabCompleteUtil.completeFreeInput(name, 32, "name");
+        }
+
+        if (args.sizeIs(2)) {
+            return sbr.storageRegistry().activeStorage().brushes().complete(player, args.get(1).asString());
         }
 
         return Collections.emptyList();

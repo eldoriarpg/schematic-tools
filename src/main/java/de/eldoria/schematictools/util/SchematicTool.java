@@ -32,8 +32,8 @@ public final class SchematicTool {
         return player.getInventory().getItemInMainHand();
     }
 
-    public static Optional<Integer> getCurrentTool(Player player) {
-        return getToolId(getPlayerItem(player));
+    public static Optional<ToolMeta> getCurrentTool(Player player) {
+        return getTool(getPlayerItem(player));
     }
 
     public static Optional<Integer> getToolId(ItemStack stack) {
@@ -42,6 +42,13 @@ public final class SchematicTool {
 
     public static Optional<Integer> getUsed(ItemStack stack) {
         return DataContainerUtil.get(stack, USED, PersistentDataType.INTEGER);
+    }
+
+    public static Optional<ToolMeta> getTool(ItemStack stack) {
+        var toolId = getToolId(stack);
+        if (toolId.isEmpty()) return Optional.empty();
+        var used = getUsed(stack);
+        return Optional.of(new ToolMeta(toolId.get(), used.get(), stack));
     }
 
     public static void makeUnique(ItemStack stack) {
@@ -55,6 +62,7 @@ public final class SchematicTool {
     public static void initTool(ItemStack stack, Tool tool) {
         setToolId(stack, tool.id());
         makeUnique(stack);
+        setUsed(stack, 0);
         updateUsage(stack, tool);
     }
 
@@ -67,7 +75,17 @@ public final class SchematicTool {
     }
 
     public static void updateUsage(ItemStack stack, Tool tool) {
-        if (!tool.hasUsage()) return;
+        if (!tool.hasUsage()) {
+            var loreIndex = DataContainerUtil.get(stack, LORE_INDEX, PersistentDataType.INTEGER);
+            loreIndex.ifPresent(index -> {
+                var meta = stack.getItemMeta();
+                var lore = meta.getLore();
+                lore.remove(index.intValue());
+                stack.setItemMeta(meta);
+                DataContainerUtil.remove(stack, LORE_INDEX, PersistentDataType.INTEGER);
+            });
+            return;
+        }
 
         var loreIndex = DataContainerUtil.get(stack, LORE_INDEX, PersistentDataType.INTEGER);
         var meta = stack.getItemMeta();
@@ -84,5 +102,16 @@ public final class SchematicTool {
             lore.add(String.format("Used: %s/%s", 0, tool.usages()));
         }
         stack.setItemMeta(meta);
+    }
+
+    public record ToolMeta(int id, int usages, ItemStack stack) {
+
+        public void updateUsage(Tool tool) {
+            SchematicTool.updateUsage(stack, tool);
+        }
+
+        public void incrementUsage() {
+            SchematicTool.incrementUsage(stack);
+        }
     }
 }

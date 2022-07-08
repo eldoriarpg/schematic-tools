@@ -17,6 +17,7 @@ import de.eldoria.messageblocker.blocker.MessageBlocker;
 import de.eldoria.schematicbrush.util.Colors;
 import de.eldoria.schematictools.configuration.Configuration;
 import de.eldoria.schematictools.configuration.elements.Tool;
+import de.eldoria.schematictools.util.Permissions;
 import de.eldoria.schematictools.util.SchematicTool;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -37,6 +38,7 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
     public Info(Plugin plugin, MessageBlocker messageBlocker, Configuration configuration) {
         super(plugin, CommandMeta.builder("info")
                 .addUnlocalizedArgument("name", false)
+                .withPermission(Permissions.Info.CURRENT, Permissions.Info.ALL)
                 .build());
         this.messageBlocker = messageBlocker;
         this.configuration = configuration;
@@ -45,21 +47,32 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
 
     @Override
     public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+        args.parseQuoted();
         Tool tool;
         if (args.isEmpty()) {
-            var currentToolId = SchematicTool.getCurrentTool(player);
-            CommandAssertions.isTrue(currentToolId.isPresent(), "Please hold a schematic tool in your hand or enter a name.");
-            var optTool = configuration.tools().byId(currentToolId.get());
+            CommandAssertions.permission(player, false, Permissions.Info.CURRENT);
+            var optToolMeta = SchematicTool.getCurrentTool(player);
+            CommandAssertions.isTrue(optToolMeta.isPresent(), "Please hold a schematic tool in your hand or enter a name.");
+            var optTool = configuration.tools().byId(optToolMeta.get().id());
             tool = optTool.get();
         } else {
+            CommandAssertions.permission(player, false, Permissions.Info.ALL);
             var optTool = configuration.tools().byName(args.asString(0));
             CommandAssertions.isTrue(optTool.isPresent(), "Unkown tool name.");
             tool = optTool.get();
         }
         messageBlocker.blockPlayer(player);
 
-        var composer = MessageComposer.create()
-                .text(tool.asComponent());
+        var composer = MessageComposer.create();
+        if (player.hasPermission(Permissions.MANAGE)) {
+            composer.text(tool.asModifyComponent());
+        } else {
+            composer.text(tool.asInfoComponent());
+        }
+        if (player.hasPermission(Permissions.Info.ALL)) {
+            composer.newLine().text("<click:run_command:'/schematicTools list'><%s>[Back]</click>", Colors.CHANGE);
+        }
+
         messageBlocker.ifEnabled(() -> composer.newLine().text("<click:run_command:'/schematicTools chatblock false'><%s>[x]</click>", Colors.REMOVE));
         messageBlocker.announce(player, "[x]");
         audiences.player(player).sendMessage(miniMessage.deserialize(composer.build()));

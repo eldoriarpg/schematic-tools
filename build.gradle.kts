@@ -84,6 +84,8 @@ tasks {
         relocate("de.eldoria.eldoutilities", "de.eldoria.schematicbrush.libs.eldoutilities")
         relocate("de.eldoria.messageblocker", "de.eldoria.schematicbrush.libs.messageblocker")
         relocate("net.kyori", "de.eldoria.schematicbrush.libs.kyori")
+        archiveBaseName.set("SchematicTools")
+        archiveClassifier.set("")
         mergeServiceFiles()
     }
 
@@ -115,6 +117,7 @@ tasks {
 }
 
 bukkit {
+    name = "SchematicTools"
     main = "de.eldoria.schematictools.SchematicTools"
     apiVersion = "1.14"
     authors = listOf("RainbowDashLabs")
@@ -124,6 +127,7 @@ bukkit {
         register("schematicTools") {
             description = "Base command of schematic tools"
             permission = "schematictools"
+            aliases = listOf("sbt")
         }
     }
 }

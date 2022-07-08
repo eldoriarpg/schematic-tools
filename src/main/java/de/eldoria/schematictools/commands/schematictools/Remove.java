@@ -29,13 +29,14 @@ public class Remove extends AdvancedCommand implements IPlayerTabExecutor {
     public Remove(Plugin plugin, Configuration configuration) {
         super(plugin, CommandMeta.builder("remove")
                 .addUnlocalizedArgument("name", true)
-                .withPermission(Permissions.USE)
+                .withPermission(Permissions.MANAGE)
                 .build());
         this.configuration = configuration;
     }
 
     @Override
     public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+        args.parseQuoted();
         var tool = configuration.tools().byName(args.get(0).asString());
         CommandAssertions.isTrue(tool.isPresent(), "Tool not found.");
 

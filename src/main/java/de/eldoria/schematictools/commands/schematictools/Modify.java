@@ -41,7 +41,7 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
                 .addUnlocalizedArgument("name", true)
                 .addUnlocalizedArgument("field", true)
                 .addUnlocalizedArgument("value", true)
-                .withPermission(Permissions.USE)
+                .withPermission(Permissions.MANAGE)
                 .build());
         this.configuration = configuration;
         this.sbr = sbr;
@@ -49,6 +49,7 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
 
     @Override
     public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+        args.parseQuoted();
         var optionalTool = configuration.tools().byName(args.asString(0));
 
         CommandAssertions.isTrue(optionalTool.isPresent(), "Unkown tool.");

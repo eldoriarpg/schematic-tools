@@ -8,6 +8,7 @@ package de.eldoria.schematictools.configuration.elements;
 
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+@SerializableAs("stTools")
 public class Tools implements ConfigurationSerializable {
     private List<Tool> tools = new ArrayList<>();
     private int currentId = 0;

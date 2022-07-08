@@ -34,11 +34,11 @@ public class List extends AdvancedCommand implements IPlayerTabExecutor {
     private final BukkitAudiences audiences;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private final MessageBlocker messageBlocker;
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public List(Plugin plugin, MessageBlocker messageBlocker, Configuration configuration) {
         super(plugin, CommandMeta.builder("list")
-                .withPermission(Permissions.USE)
+                .withPermission(Permissions.LIST)
                 .build());
         audiences = BukkitAudiences.builder(plugin).build();
         this.messageBlocker = messageBlocker;
@@ -51,14 +51,13 @@ public class List extends AdvancedCommand implements IPlayerTabExecutor {
         var tools = configuration.tools();
         var composer = MessageComposer.create();
         addPageHeader(composer, "Tools");
-        addEntries(composer, tools.page(0, PAGE_SIZE), Tool::asComponent);
+        addEntries(composer, tools.page(0, PAGE_SIZE), Tool::asListComponent);
         addPageFooter(composer, index, tools);
         send(composer, player);
     }
 
     protected void addPageHeader(MessageComposer composer, String title) {
-        composer.text("<%s>", Colors.HEADING).space().text(title).newLine()
-                .newLine();
+        composer.text("<%s>%s", Colors.HEADING, title).newLine();
     }
 
     protected <T> void addEntries(MessageComposer composer, java.util.List<T> entries, Function<T, String> map) {

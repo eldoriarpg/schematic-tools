@@ -11,15 +11,20 @@ import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import de.eldoria.schematicbrush.storage.Storage;
 import de.eldoria.schematicbrush.storage.brush.Brush;
 import de.eldoria.schematicbrush.util.Colors;
+import de.eldoria.schematictools.util.Permissions;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@SerializableAs("stTool")
 public class Tool implements ConfigurationSerializable {
     private static final UUID GLOBAL = new UUID(0L, 0L);
     /**
@@ -38,6 +43,7 @@ public class Tool implements ConfigurationSerializable {
      * The unique numeric id of the brush
      */
     private final int id;
+    @Nullable
     private String permission;
     private int usages;
 
@@ -52,6 +58,7 @@ public class Tool implements ConfigurationSerializable {
 
     public Tool(Map<String, Object> objectMap) {
         var map = SerializationUtil.mapOf(objectMap);
+        name = map.getValue("name");
         owner = UUID.fromString(map.getValue("owner"));
         brushName = map.getValue("brushName");
         id = map.getValue("id");
@@ -63,6 +70,7 @@ public class Tool implements ConfigurationSerializable {
     @NotNull
     public Map<String, Object> serialize() {
         return SerializationUtil.newBuilder()
+                .add("name", name)
                 .add("owner", owner.toString())
                 .add("brushName", brushName)
                 .add("id", id)
@@ -88,8 +96,9 @@ public class Tool implements ConfigurationSerializable {
         return id;
     }
 
+    @NotNull
     public String permission() {
-        return permission;
+        return permission == null ? Permissions.USE : permission;
     }
 
     public void permission(String permission) {
@@ -120,22 +129,46 @@ public class Tool implements ConfigurationSerializable {
         return storage.brushes().playerContainer(owner).get(brushName);
     }
 
-    public String asComponent() {
+    public String asModifyComponent() {
         var base = "/schematicTools modify ";
 
         return MessageComposer.create()
                 .text("<%s>%s", Colors.HEADING, name)
                 .newLine()
                 .text("<%s>Brush: <%s>%s", Colors.NAME, Colors.VALUE, brushName)
+                .space()
                 .text("<%s><click:suggest_command:'%s %s brushName '>[Change]</click>", Colors.CHANGE, base, name)
                 .newLine()
-                .text("<%s>Brush Owner: <%s>%s", Colors.NAME, Colors.VALUE, hasGlobalBrush() ? "global" : owner)
+                .text("<%s>Brush Owner: <%s>%s", Colors.NAME, Colors.VALUE, hasGlobalBrush() ? "global" : Bukkit.getOfflinePlayer(owner).getName())
                 .newLine()
                 .text("<%s>Permission: <%s>%s", Colors.NAME, Colors.VALUE, permission)
+                .space()
                 .text("<%s><click:suggest_command:'%s %s permission '>[Change]</click>", Colors.CHANGE, base, name)
                 .newLine()
-                .text("<%s>Usages: <%s> %s", Colors.NAME, Colors.VALUE, hasUsage() ? usages : "Unlimited")
+                .text("<%s>Usages: <%s>%s", Colors.NAME, Colors.VALUE, hasUsage() ? usages : "Unlimited")
+                .space()
                 .text("<%s><click:suggest_command:'%s %s usages '>[Change]</click>", Colors.CHANGE, base, name)
+                .build();
+    }
+
+    public String asInfoComponent() {
+        return MessageComposer.create()
+                .text("<%s>%s", Colors.HEADING, name)
+                .newLine()
+                .text("<%s>Brush: %s", Colors.NAME, Colors.VALUE, brushName)
+                .newLine()
+                .text("<%s>Brush Owner: <%s>%s", Colors.NAME, Colors.VALUE, hasGlobalBrush() ? "global" : Bukkit.getOfflinePlayer(owner).getName())
+                .newLine()
+                .text("<%s>Permission: <%s>%s", Colors.NAME, Colors.VALUE, permission)
+                .newLine()
+                .text("<%s>Usages: <%s> %s", Colors.NAME, Colors.VALUE, hasUsage() ? usages : "Unlimited")
+                .build();
+    }
+
+    public String asListComponent() {
+        return MessageComposer.create().text("<%s><hover:show_text:'%s'>%s", Colors.NAME, asInfoComponent(), name)
+                .space()
+                .text("<click:run_command:'/schematicTools info \"%s\"'><%s>[Info]</click>", name, Colors.CHANGE)
                 .build();
     }
 

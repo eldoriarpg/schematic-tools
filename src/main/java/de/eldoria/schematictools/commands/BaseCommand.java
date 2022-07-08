@@ -19,8 +19,8 @@ import de.eldoria.schematictools.commands.schematictools.Remove;
 import de.eldoria.schematictools.configuration.Configuration;
 import org.bukkit.plugin.Plugin;
 
-public class Tools extends AdvancedCommand {
-    public Tools(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration, MessageBlocker messageBlocker) {
+public class BaseCommand extends AdvancedCommand {
+    public BaseCommand(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration, MessageBlocker messageBlocker) {
         super(plugin, CommandMeta.builder("schematicTools")
                 .withSubCommand(new Bind(plugin, configuration))
                 .withSubCommand(new Create(plugin, sbr, configuration))

@@ -30,7 +30,7 @@ public class Bind extends AdvancedCommand implements IPlayerTabExecutor {
     public Bind(Plugin plugin, Configuration configuration) {
         super(plugin, CommandMeta.builder("bind")
                 .addUnlocalizedArgument("name", true)
-                .withPermission(Permissions.USE)
+                .withPermission(Permissions.BIND)
                 .build());
         this.configuration = configuration;
     }

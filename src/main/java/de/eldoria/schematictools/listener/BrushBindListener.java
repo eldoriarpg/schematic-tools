@@ -11,6 +11,7 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.command.tool.InvalidToolBindException;
 import com.sk89q.worldedit.extension.platform.Actor;
+import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
 import de.eldoria.schematicbrush.util.WorldEditBrush;
 import de.eldoria.schematictools.configuration.Configuration;
@@ -27,11 +28,13 @@ public class BrushBindListener implements Listener {
     private final Plugin plugin;
     private final SchematicBrushReborn sbr;
     private final Configuration configuration;
+    private final MessageSender messageSender;
 
-    public BrushBindListener(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration) {
+    public BrushBindListener(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration, MessageSender messageSender) {
         this.plugin = plugin;
         this.sbr = sbr;
         this.configuration = configuration;
+        this.messageSender = messageSender;
     }
 
     @EventHandler
@@ -55,35 +58,40 @@ public class BrushBindListener implements Listener {
 
         try {
             getLocalSession(player).setTool(BukkitAdapter.adapt(stack).getType(), null);
+            messageSender.sendMessage(player, "Deactivated schematic tool");
         } catch (InvalidToolBindException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void bindTool(Player player, ItemStack stack) {
-        var toolId = SchematicTool.getToolId(stack);
-        if (toolId.isEmpty()) return;
+        var optMeta = SchematicTool.getTool(stack);
+        if (optMeta.isEmpty()) return;
 
-        var used = SchematicTool.getUsed(stack);
-        if (used.get() == 0) return;
+        var toolMeta = optMeta.get();
+        var optTool = configuration.tools().byId(toolMeta.id());
 
-        var tool = configuration.tools().byId(toolId.get());
-
-        if (tool.isEmpty()) {
-            plugin.getLogger().warning("Brush Tool with ID " + toolId.get() + " does not exist anymore.");
+        if (optTool.isEmpty()) {
+            plugin.getLogger().warning("Brush Tool with ID " + toolMeta + " does not exist anymore.");
             return;
         }
 
-        tool.get().getBrush(sbr.storageRegistry().activeStorage())
+        var tool = optTool.get();
+
+        if (tool.hasUsage() && toolMeta.usages() >= tool.usages()) return;
+
+
+
+        tool.getBrush(sbr.storageRegistry().activeStorage())
                 .thenAccept(brush -> {
                     if (brush.isEmpty()) {
-                        plugin.getLogger().warning("Tool " + tool.get() + " has an invalid brush.");
+                        plugin.getLogger().warning("Tool " + tool + " has an invalid brush.");
                         return;
                     }
 
                     var build = brush.get().snapshot().load(player, sbr.brushSettingsRegistry(), sbr.schematics()).build(plugin, player);
-                    //TODO: We need a default permission
-                    WorldEditBrush.setBrush(player, build, tool.get().permission());
+                    WorldEditBrush.setBrush(player, build, tool.permission());
+                    messageSender.sendMessage(player, "Activated schematic tool");
                 });
     }
 
