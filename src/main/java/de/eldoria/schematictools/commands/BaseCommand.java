@@ -11,6 +11,7 @@ import de.eldoria.eldoutilities.commands.command.CommandMeta;
 import de.eldoria.messageblocker.blocker.MessageBlocker;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
 import de.eldoria.schematictools.commands.schematictools.Bind;
+import de.eldoria.schematictools.commands.schematictools.ChatBlock;
 import de.eldoria.schematictools.commands.schematictools.Create;
 import de.eldoria.schematictools.commands.schematictools.Info;
 import de.eldoria.schematictools.commands.schematictools.List;
@@ -28,6 +29,7 @@ public class BaseCommand extends AdvancedCommand {
                 .withSubCommand(new Info(plugin, messageBlocker, configuration))
                 .withSubCommand(new Modify(plugin, configuration, sbr))
                 .withSubCommand(new Remove(plugin, configuration))
+                .withSubCommand(new ChatBlock(plugin,messageBlocker))
                 .build());
     }
 }
