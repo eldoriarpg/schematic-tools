@@ -10,7 +10,11 @@ import com.sk89q.worldedit.command.tool.brush.Brush;
 import de.eldoria.schematicbrush.util.WorldEditBrush;
 import org.bukkit.entity.Player;
 
-public class Permissions {
+public final class Permissions {
+    private Permissions() {
+        throw new UnsupportedOperationException("This is a utility class.");
+    }
+
     private static final String BASE = "schematictools";
     /**
      * Default permission to use a schematic tool. Can be overridden via {@link WorldEditBrush#setBrush(Player, Brush, String)}
@@ -24,7 +28,11 @@ public class Permissions {
         return String.join(".", perms);
     }
 
-    public static class Info {
+    public static final class Info {
+        private Info() {
+            throw new UnsupportedOperationException("This is a utility class.");
+        }
+
         private static final String INFO = perm(BASE, "info");
         /**
          * Base command for seeing information about the current equipped tool
