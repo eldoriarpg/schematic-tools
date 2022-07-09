@@ -15,12 +15,15 @@ import de.eldoria.schematictools.configuration.Configuration;
 import de.eldoria.schematictools.util.SchematicTool;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
 public class BrushPasteListener implements Listener {
+    private Plugin plugin;
     private final Configuration configuration;
     private final MessageSender messageSender;
 
-    public BrushPasteListener(Configuration configuration, MessageSender messageSender) {
+    public BrushPasteListener(Plugin plugin, Configuration configuration, MessageSender messageSender) {
+        this.plugin = plugin;
         this.configuration = configuration;
         this.messageSender = messageSender;
     }
@@ -44,7 +47,8 @@ public class BrushPasteListener implements Listener {
             messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "The usages of your brush tool are exhausted.");
             toolMeta.updateUsage(tool);
             if (configuration.toolRemoval().isRemoveUsed()) {
-                SchematicTool.getPlayerItem(player).setAmount(0);
+                plugin.getServer().getScheduler().runTask(plugin,
+                        () -> SchematicTool.getPlayerItem(player).setAmount(0));
             }
         }
     }
@@ -66,7 +70,8 @@ public class BrushPasteListener implements Listener {
         if (tool.hasUsage() && toolMeta.usages() >= tool.usages()) {
             messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "The usages of your brush tool are exhausted.");
             if (configuration.toolRemoval().isRemoveUsed()) {
-                SchematicTool.getPlayerItem(player).setAmount(0);
+                plugin.getServer().getScheduler().runTask(plugin,
+                        () -> SchematicTool.getPlayerItem(player).setAmount(0));
             }
         }
     }

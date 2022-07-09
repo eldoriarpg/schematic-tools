@@ -36,7 +36,7 @@ public class SchematicTools extends EldoPlugin {
         registerCommand(new BaseCommand(this, sbr, configuration, messageBlocker));
 
         registerListener(new BrushBindListener(this, sbr, configuration, messageSender),
-                new BrushPasteListener(configuration, messageSender));
+                new BrushPasteListener(this, configuration, messageSender));
     }
 
     @Override
