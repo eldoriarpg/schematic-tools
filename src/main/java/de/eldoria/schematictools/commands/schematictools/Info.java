@@ -65,7 +65,7 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
         showTool(player, tool);
     }
 
-    public void showTool(Player player, Tool tool){
+    public void showTool(Player player, Tool tool) {
         messageBlocker.blockPlayer(player);
 
         var composer = MessageComposer.create();

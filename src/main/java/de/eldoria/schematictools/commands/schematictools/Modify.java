@@ -33,8 +33,8 @@ import java.util.Optional;
 // Modify an existing Schematic Tool
 public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
     private final Configuration configuration;
-    private SchematicBrushReborn sbr;
-    private Info info;
+    private final SchematicBrushReborn sbr;
+    private final Info info;
 
     public Modify(Plugin plugin, Configuration configuration, SchematicBrushReborn sbr, Info info) {
         super(plugin, CommandMeta.builder("modify")

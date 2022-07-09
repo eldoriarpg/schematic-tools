@@ -28,6 +28,9 @@ public class Tools implements ConfigurationSerializable {
         currentId = map.getValue("currentId");
     }
 
+    public Tools() {
+    }
+
     @Override
     @NotNull
     public Map<String, Object> serialize() {
@@ -35,9 +38,6 @@ public class Tools implements ConfigurationSerializable {
                 .add("tools", tools)
                 .add("currentId", currentId)
                 .build();
-    }
-
-    public Tools() {
     }
 
     public List<Tool> tools() {
@@ -83,6 +83,6 @@ public class Tools implements ConfigurationSerializable {
     }
 
     public int pages(int pageSize) {
-        return (int) Math.ceil(tools.size() / (double)pageSize);
+        return (int) Math.ceil(tools.size() / (double) pageSize);
     }
 }

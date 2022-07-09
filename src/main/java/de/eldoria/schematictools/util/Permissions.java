@@ -12,15 +12,17 @@ import org.bukkit.entity.Player;
 
 public class Permissions {
     private static final String BASE = "schematictools";
-
-    private static String perm(String... perms) {
-        return String.join(".", perms);
-    }
-
     /**
      * Default permission to use a schematic tool. Can be overridden via {@link WorldEditBrush#setBrush(Player, Brush, String)}
      */
     public static final String USE = perm(BASE, "use");
+    public static final String LIST = perm(BASE, "list");
+    public static final String MANAGE = perm(BASE, "modify");
+    public static final String BIND = perm(BASE, "bind");
+
+    private static String perm(String... perms) {
+        return String.join(".", perms);
+    }
 
     public static class Info {
         private static final String INFO = perm(BASE, "info");
@@ -35,10 +37,5 @@ public class Permissions {
         public static final String ALL = perm(INFO, "all");
 
     }
-
-    public static final String LIST = perm(BASE, "list");
-    public static final String MANAGE = perm(BASE, "modify");
-
-    public static final String BIND = perm(BASE, "bind");
 
 }

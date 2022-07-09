@@ -14,6 +14,7 @@ import de.eldoria.schematicbrush.SchematicBrushReborn;
 import de.eldoria.schematictools.commands.BaseCommand;
 import de.eldoria.schematictools.configuration.Configuration;
 import de.eldoria.schematictools.configuration.elements.Tool;
+import de.eldoria.schematictools.configuration.elements.ToolRemoval;
 import de.eldoria.schematictools.configuration.elements.Tools;
 import de.eldoria.schematictools.listener.BrushBindListener;
 import de.eldoria.schematictools.listener.BrushPasteListener;
@@ -40,7 +41,7 @@ public class SchematicTools extends EldoPlugin {
 
     @Override
     public List<Class<? extends ConfigurationSerializable>> getConfigSerialization() {
-        return List.of(Tools.class, Tool.class);
+        return List.of(Tools.class, Tool.class, ToolRemoval.class);
     }
 
     @Override

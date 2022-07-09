@@ -42,6 +42,12 @@ public class BrushBindListener implements Listener {
         this.messageSender = messageSender;
     }
 
+    private static LocalSession getLocalSession(Player player) {
+        Actor actor = BukkitAdapter.adapt(player);
+
+        return WORLD_EDIT.getSessionManager().get(actor);
+    }
+
     @EventHandler
     public void onItemSwap(PlayerItemHeldEvent event) {
         var previousSlot = event.getPreviousSlot();
@@ -120,11 +126,5 @@ public class BrushBindListener implements Listener {
                     WorldEditBrush.setBrush(player, build, tool.permission());
                     messageSender.send(MessageChannel.ACTION_BAR, MessageType.NORMAL, player, "Activated schematic tool");
                 });
-    }
-
-    private static LocalSession getLocalSession(Player player) {
-        Actor actor = BukkitAdapter.adapt(player);
-
-        return WORLD_EDIT.getSessionManager().get(actor);
     }
 }

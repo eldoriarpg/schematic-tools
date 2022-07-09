@@ -20,14 +20,14 @@ import java.util.Optional;
 
 public final class SchematicTool {
 
-    private SchematicTool() {
-        throw new UnsupportedOperationException("This is a utility class.");
-    }
-
     public static final NamespacedKey TOOL_ID = new NamespacedKey("schematictools", "tool_id");
     public static final NamespacedKey USED = new NamespacedKey("schematictools", "used");
     public static final NamespacedKey UNIQUE = new NamespacedKey("schematictools", "unique");
     public static final NamespacedKey LORE_INDEX = new NamespacedKey("schematictools", "lore_index");
+
+    private SchematicTool() {
+        throw new UnsupportedOperationException("This is a utility class.");
+    }
 
     public static ItemStack getPlayerItem(Player player) {
         return player.getInventory().getItemInMainHand();

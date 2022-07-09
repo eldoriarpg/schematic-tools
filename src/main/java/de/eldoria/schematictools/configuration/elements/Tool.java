@@ -28,6 +28,10 @@ import java.util.concurrent.CompletableFuture;
 public class Tool implements ConfigurationSerializable {
     private static final UUID GLOBAL = new UUID(0L, 0L);
     /**
+     * The unique numeric id of the brush
+     */
+    private final int id;
+    /**
      * The owner of the underlying brush
      */
     private UUID owner;
@@ -39,10 +43,6 @@ public class Tool implements ConfigurationSerializable {
      * The name of the underlying brush
      */
     private String brushName;
-    /**
-     * The unique numeric id of the brush
-     */
-    private final int id;
     @Nullable
     private String permission;
     private int usages;

@@ -31,7 +31,7 @@ public class BaseCommand extends AdvancedCommand {
                     cmds.add(info);
                     cmds.add(new Modify(plugin, configuration, sbr, info));
                     cmds.add(new Remove(plugin, configuration));
-                    cmds.add(new ChatBlock(plugin,messageBlocker));
+                    cmds.add(new ChatBlock(plugin, messageBlocker));
                 })
                 .build());
     }

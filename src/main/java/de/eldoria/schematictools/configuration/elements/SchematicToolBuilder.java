@@ -17,14 +17,14 @@ public class SchematicToolBuilder {
     private String permission = null;
     private int usages = -1;
 
-    public SchematicToolBuilder(UUID owner, String name,String brushName, int id) {
+    public SchematicToolBuilder(UUID owner, String name, String brushName, int id) {
         this.owner = owner;
         this.name = name;
         this.brushName = brushName;
         this.id = id;
     }
 
-    public SchematicToolBuilder(String name,String brushName, int id) {
+    public SchematicToolBuilder(String name, String brushName, int id) {
         this.name = name;
         this.brushName = brushName;
         this.id = id;

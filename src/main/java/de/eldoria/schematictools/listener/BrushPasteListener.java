@@ -41,7 +41,7 @@ public class BrushPasteListener implements Listener {
 
         if (toolMeta.usages() >= tool.usages()) {
             event.setCancelled(true);
-            messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR,player, "The usages of your brush tool are exhausted.");
+            messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "The usages of your brush tool are exhausted.");
             toolMeta.updateUsage(tool);
             if (configuration.toolRemoval().isRemoveUsed()) {
                 SchematicTool.getPlayerItem(player).setAmount(0);
@@ -60,11 +60,11 @@ public class BrushPasteListener implements Listener {
 
         var optionalTool = configuration.tools().byId(toolMeta.id());
         if (optionalTool.isEmpty()) return;
-        toolMeta.updateUsage(optionalTool.get());
+        var tool = optionalTool.get();
+        toolMeta.updateUsage(tool);
 
-
-        if (toolMeta.usages() >= optionalTool.get().usages()) {
-            messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR,player, "The usages of your brush tool are exhausted.");
+        if (tool.hasUsage() && toolMeta.usages() >= tool.usages()) {
+            messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "The usages of your brush tool are exhausted.");
             if (configuration.toolRemoval().isRemoveUsed()) {
                 SchematicTool.getPlayerItem(player).setAmount(0);
             }

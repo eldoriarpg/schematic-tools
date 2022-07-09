@@ -15,9 +15,9 @@ import java.util.Map;
 
 @SerializableAs("stToolRemoval")
 public class ToolRemoval implements ConfigurationSerializable {
-    private boolean removeUsed;
-    private boolean removeInvalidTools;
-    private boolean removeInvalidBrushes;
+    private final boolean removeUsed;
+    private final boolean removeInvalidTools;
+    private final boolean removeInvalidBrushes;
 
     /**
      * Constructor required by {@link ConfigurationSerializable} in order to deserialize the object.
