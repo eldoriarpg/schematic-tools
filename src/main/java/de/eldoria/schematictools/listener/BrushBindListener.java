@@ -102,6 +102,8 @@ public class BrushBindListener implements Listener {
             return;
         }
 
+        if (!player.hasPermission(tool.permission())) return;
+
 
         tool.getBrush(sbr.storageRegistry().activeStorage())
                 .thenAccept(brush -> {

@@ -28,6 +28,7 @@ public class Configuration extends EldoConfig {
 
     @Override
     protected void saveConfigs() {
+        getConfig().set("toolRemoval", toolRemoval);
         loadConfig("tools", Consumers.emptyConsumer(), false).set("tools", tools);
     }
 

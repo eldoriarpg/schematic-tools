@@ -8,10 +8,12 @@ package de.eldoria.schematictools.configuration.elements;
 
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+@SerializableAs("stToolRemoval")
 public class ToolRemoval implements ConfigurationSerializable {
     private boolean removeUsed;
     private boolean removeInvalidTools;
