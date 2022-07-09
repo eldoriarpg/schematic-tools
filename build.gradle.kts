@@ -4,6 +4,7 @@ plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("de.chojo.publishdata") version "1.0.4"
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
     java
     `maven-publish`
 }
@@ -17,8 +18,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.1.8-SNAPSHOT")
-    compileOnly("org.spigotmc", "spigot-api", "1.13.2-R0.1-SNAPSHOT")
+    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.2.2-SNAPSHOT")
+    compileOnly("org.spigotmc", "spigot-api", "1.14.4-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.2.10")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
@@ -40,7 +41,7 @@ publishData {
     addRepo(Repo.main("", "https://eldonexus.de/repository/maven-releases/", false))
     addRepo(Repo.dev("DEV", "https://eldonexus.de/repository/maven-dev/", true))
     addRepo(Repo.snapshot("SNAPSHOT", "https://eldonexus.de/repository/maven-snapshots/", true))
-    publishComponent("java")
+    publishTask("shadowJar")
 }
 
 publishing {
@@ -83,6 +84,8 @@ tasks {
         relocate("de.eldoria.eldoutilities", "de.eldoria.schematicbrush.libs.eldoutilities")
         relocate("de.eldoria.messageblocker", "de.eldoria.schematicbrush.libs.messageblocker")
         relocate("net.kyori", "de.eldoria.schematicbrush.libs.kyori")
+        archiveBaseName.set("SchematicTools")
+        archiveClassifier.set("")
         mergeServiceFiles()
     }
 
@@ -110,5 +113,21 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+}
+
+bukkit {
+    name = "SchematicTools"
+    main = "de.eldoria.schematictools.SchematicTools"
+    apiVersion = "1.14"
+    authors = listOf("RainbowDashLabs")
+    depend = listOf("SchematicBrushReborn")
+
+    commands {
+        register("schematictools") {
+            description = "Base command of schematic tools"
+            permission = "schematictools.use"
+            aliases = listOf("sbt")
+        }
     }
 }
