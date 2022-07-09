@@ -8,11 +8,13 @@ package de.eldoria.schematictools.configuration;
 
 import de.eldoria.eldoutilities.configuration.EldoConfig;
 import de.eldoria.eldoutilities.utils.Consumers;
+import de.eldoria.schematictools.configuration.elements.ToolRemoval;
 import de.eldoria.schematictools.configuration.elements.Tools;
 import org.bukkit.plugin.Plugin;
 
 public class Configuration extends EldoConfig {
     private Tools tools;
+    private ToolRemoval toolRemoval;
 
     public Configuration(Plugin plugin) {
         super(plugin);
@@ -20,6 +22,7 @@ public class Configuration extends EldoConfig {
 
     @Override
     protected void reloadConfigs() {
+        toolRemoval = getConfig().getObject("toolRemoval", ToolRemoval.class, new ToolRemoval());
         tools = loadConfig("tools", Consumers.emptyConsumer(), false).getObject("tools", Tools.class, new Tools());
     }
 
@@ -30,5 +33,9 @@ public class Configuration extends EldoConfig {
 
     public Tools tools() {
         return tools;
+    }
+
+    public ToolRemoval toolRemoval() {
+        return toolRemoval;
     }
 }

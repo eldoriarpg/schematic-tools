@@ -12,6 +12,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public final class SchematicTool {
     public static final NamespacedKey UNIQUE = new NamespacedKey("schematictools", "unique");
     public static final NamespacedKey LORE_INDEX = new NamespacedKey("schematictools", "lore_index");
 
-    private static ItemStack getPlayerItem(Player player) {
+    public static ItemStack getPlayerItem(Player player) {
         return player.getInventory().getItemInMainHand();
     }
 
@@ -40,23 +41,23 @@ public final class SchematicTool {
         return DataContainerUtil.get(stack, TOOL_ID, PersistentDataType.INTEGER);
     }
 
-    public static Optional<Integer> getUsed(ItemStack stack) {
-        return DataContainerUtil.get(stack, USED, PersistentDataType.INTEGER);
+    public static @Nullable Integer getUsed(ItemStack stack) {
+        return DataContainerUtil.computeIfAbsent(stack, USED, PersistentDataType.INTEGER, 0);
     }
 
     public static Optional<ToolMeta> getTool(ItemStack stack) {
         var toolId = getToolId(stack);
         if (toolId.isEmpty()) return Optional.empty();
         var used = getUsed(stack);
-        return Optional.of(new ToolMeta(toolId.get(), used.get(), stack));
+        return Optional.of(new ToolMeta(toolId.get(), used, stack));
     }
 
     public static void makeUnique(ItemStack stack) {
-        DataContainerUtil.setIfAbsent(stack, UNIQUE, PersistentDataType.STRING, String.valueOf(System.currentTimeMillis()));
+        DataContainerUtil.putValue(stack, UNIQUE, PersistentDataType.STRING, String.valueOf(System.currentTimeMillis()));
     }
 
     public static void setToolId(ItemStack stack, int id) {
-        DataContainerUtil.setIfAbsent(stack, TOOL_ID, PersistentDataType.INTEGER, id);
+        DataContainerUtil.putValue(stack, TOOL_ID, PersistentDataType.INTEGER, id);
     }
 
     public static void initTool(ItemStack stack, Tool tool) {
@@ -67,7 +68,7 @@ public final class SchematicTool {
     }
 
     public static void setUsed(ItemStack stack, int value) {
-        DataContainerUtil.setIfAbsent(stack, USED, PersistentDataType.INTEGER, value);
+        DataContainerUtil.putValue(stack, USED, PersistentDataType.INTEGER, value);
     }
 
     public static void incrementUsage(ItemStack stack) {
@@ -76,13 +77,12 @@ public final class SchematicTool {
 
     public static void updateUsage(ItemStack stack, Tool tool) {
         if (!tool.hasUsage()) {
-            var loreIndex = DataContainerUtil.get(stack, LORE_INDEX, PersistentDataType.INTEGER);
-            loreIndex.ifPresent(index -> {
+            DataContainerUtil.get(stack, LORE_INDEX, PersistentDataType.INTEGER).ifPresent(index -> {
                 var meta = stack.getItemMeta();
                 var lore = meta.getLore();
                 lore.remove(index.intValue());
+                DataContainerUtil.remove(meta, LORE_INDEX, PersistentDataType.INTEGER);
                 stack.setItemMeta(meta);
-                DataContainerUtil.remove(stack, LORE_INDEX, PersistentDataType.INTEGER);
             });
             return;
         }
@@ -95,12 +95,13 @@ public final class SchematicTool {
         } else {
             lore = new ArrayList<>();
         }
-        if (loreIndex.isPresent()) {
-            lore.set(loreIndex.get(), String.format("Used: %s/%s", 0, tool.usages()));
-        } else {
-            DataContainerUtil.putValue(stack, LORE_INDEX, PersistentDataType.INTEGER, lore.size());
-            lore.add(String.format("Used: %s/%s", 0, tool.usages()));
-        }
+
+        loreIndex.ifPresentOrElse(index -> lore.set(index, String.format("Used: %s/%s", getUsed(stack), tool.usages())),
+                () -> {
+                    DataContainerUtil.putValue(meta, LORE_INDEX, PersistentDataType.INTEGER, lore.size());
+                    lore.add(String.format("Used: %s/%s", getUsed(stack), tool.usages()));
+                });
+        meta.setLore(lore);
         stack.setItemMeta(meta);
     }
 

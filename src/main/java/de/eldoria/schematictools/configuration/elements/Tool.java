@@ -130,24 +130,26 @@ public class Tool implements ConfigurationSerializable {
     }
 
     public String asModifyComponent() {
-        var base = "/schematicTools modify ";
+        var base = "/schematictools modify";
 
         return MessageComposer.create()
                 .text("<%s>%s", Colors.HEADING, name)
                 .newLine()
                 .text("<%s>Brush: <%s>%s", Colors.NAME, Colors.VALUE, brushName)
                 .space()
-                .text("<%s><click:suggest_command:'%s %s brushName '>[Change]</click>", Colors.CHANGE, base, name)
+                .text("<%s><click:suggest_command:'%s \"%s\" brushName '>[Change]</click>", Colors.CHANGE, base, name)
                 .newLine()
                 .text("<%s>Brush Owner: <%s>%s", Colors.NAME, Colors.VALUE, hasGlobalBrush() ? "global" : Bukkit.getOfflinePlayer(owner).getName())
                 .newLine()
-                .text("<%s>Permission: <%s>%s", Colors.NAME, Colors.VALUE, permission)
+                .text("<%s>Permission: <%s>%s", Colors.NAME, Colors.VALUE, permission())
                 .space()
-                .text("<%s><click:suggest_command:'%s %s permission '>[Change]</click>", Colors.CHANGE, base, name)
+                .text("<%s><click:suggest_command:'%s \"%s\" permission '>[Change]</click>", Colors.CHANGE, base, name)
                 .newLine()
                 .text("<%s>Usages: <%s>%s", Colors.NAME, Colors.VALUE, hasUsage() ? usages : "Unlimited")
                 .space()
-                .text("<%s><click:suggest_command:'%s %s usages '>[Change]</click>", Colors.CHANGE, base, name)
+                .text("<%s><click:suggest_command:'%s \"%s\" usages '>[Change]</click>", Colors.CHANGE, base, name)
+                .space()
+                .text("<%s><click:run_command:'%s \"%s\" usages -1'>[Unlimited]</click>", Colors.CHANGE, base, name)
                 .build();
     }
 
@@ -155,20 +157,20 @@ public class Tool implements ConfigurationSerializable {
         return MessageComposer.create()
                 .text("<%s>%s", Colors.HEADING, name)
                 .newLine()
-                .text("<%s>Brush: %s", Colors.NAME, Colors.VALUE, brushName)
+                .text("<%s>Brush: <%s>%s", Colors.NAME, Colors.VALUE, brushName)
                 .newLine()
                 .text("<%s>Brush Owner: <%s>%s", Colors.NAME, Colors.VALUE, hasGlobalBrush() ? "global" : Bukkit.getOfflinePlayer(owner).getName())
                 .newLine()
-                .text("<%s>Permission: <%s>%s", Colors.NAME, Colors.VALUE, permission)
+                .text("<%s>Permission: <%s>%s", Colors.NAME, Colors.VALUE, permission())
                 .newLine()
-                .text("<%s>Usages: <%s> %s", Colors.NAME, Colors.VALUE, hasUsage() ? usages : "Unlimited")
+                .text("<%s>Usages: <%s>%s", Colors.NAME, Colors.VALUE, hasUsage() ? usages : "Unlimited")
                 .build();
     }
 
     public String asListComponent() {
         return MessageComposer.create().text("<%s><hover:show_text:'%s'>%s", Colors.NAME, asInfoComponent(), name)
                 .space()
-                .text("<click:run_command:'/schematicTools info \"%s\"'><%s>[Info]</click>", name, Colors.CHANGE)
+                .text("<click:run_command:'/schematictools info \"%s\"'><%s>[Info]</click>", name, Colors.CHANGE)
                 .build();
     }
 

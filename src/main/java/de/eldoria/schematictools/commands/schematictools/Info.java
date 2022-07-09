@@ -61,6 +61,11 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
             CommandAssertions.isTrue(optTool.isPresent(), "Unkown tool name.");
             tool = optTool.get();
         }
+
+        showTool(player, tool);
+    }
+
+    public void showTool(Player player, Tool tool){
         messageBlocker.blockPlayer(player);
 
         var composer = MessageComposer.create();
@@ -70,10 +75,10 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
             composer.text(tool.asInfoComponent());
         }
         if (player.hasPermission(Permissions.Info.ALL)) {
-            composer.newLine().text("<click:run_command:'/schematicTools list'><%s>[Back]</click>", Colors.CHANGE);
+            composer.newLine().text("<click:run_command:'/schematictools list'><%s>[Back]</click>", Colors.CHANGE);
         }
 
-        messageBlocker.ifEnabled(() -> composer.newLine().text("<click:run_command:'/schematicTools chatblock false'><%s>[x]</click>", Colors.REMOVE));
+        messageBlocker.ifEnabled(() -> composer.newLine().text("<click:run_command:'/schematictools chatblock false'><%s>[x]</click>", Colors.REMOVE));
         messageBlocker.announce(player, "[x]");
         audiences.player(player).sendMessage(miniMessage.deserialize(composer.build()));
     }

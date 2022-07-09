@@ -18,7 +18,6 @@ import de.eldoria.eldoutilities.utils.Futures;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
 import de.eldoria.schematictools.commands.schematictools.util.BrushLoader;
 import de.eldoria.schematictools.configuration.Configuration;
-import de.eldoria.schematictools.configuration.elements.Tool;
 import de.eldoria.schematictools.util.Permissions;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -35,8 +34,9 @@ import java.util.Optional;
 public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
     private final Configuration configuration;
     private SchematicBrushReborn sbr;
+    private Info info;
 
-    public Modify(Plugin plugin, Configuration configuration, SchematicBrushReborn sbr) {
+    public Modify(Plugin plugin, Configuration configuration, SchematicBrushReborn sbr, Info info) {
         super(plugin, CommandMeta.builder("modify")
                 .addUnlocalizedArgument("name", true)
                 .addUnlocalizedArgument("field", true)
@@ -45,6 +45,7 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
                 .build());
         this.configuration = configuration;
         this.sbr = sbr;
+        this.info = info;
     }
 
     @Override
@@ -54,9 +55,9 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
 
         CommandAssertions.isTrue(optionalTool.isPresent(), "Unkown tool.");
 
-        var value = args.get(3);
+        var value = args.get(2);
 
-        Tool tool = optionalTool.get();
+        var tool = optionalTool.get();
         switch (args.asString(1).toLowerCase(Locale.ROOT)) {
             case "brushname" -> {
                 var storage = sbr.storageRegistry().activeStorage();
@@ -66,22 +67,26 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
                     tool.brush(container.owner(), brush.get());
                 }).whenComplete(Futures.whenComplete(suc -> {
                     configuration.save();
-                    // TODO: Send info again
+                    info.showTool(player, tool);
                 }, err -> handleCommandError(player, err)));
             }
             case "name" -> {
                 CommandAssertions.isFalse(configuration.tools().byName(value.asString()).isPresent(), "Name is already in use.");
                 tool.name(value.asString());
                 configuration.save();
-                // TODO: Send info again
+                info.showTool(player, tool);
             }
             case "usages" -> {
-                tool.usages(value.asInt());
-                // TODO: Send info again
+                var usages = value.asInt();
+                if (usages != -1) {
+                    CommandAssertions.min(usages, 1);
+                }
+                tool.usages(usages);
+                info.showTool(player, tool);
             }
             case "permission" -> {
                 tool.permission(value.asString());
-                // TODO: Send info again
+                info.showTool(player, tool);
             }
             default -> throw CommandException.message("Invalid field name.");
         }
@@ -99,13 +104,42 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+
         if (args.sizeIs(1)) {
             return configuration.tools().complete(args.asString(0));
         }
 
-        if ("o".equalsIgnoreCase(args.flags().lastFlag())) {
-            return TabCompleteUtil.completePlayers(args.flags().getIfPresent("o").map(Input::asString).orElse(""));
+        if (args.sizeIs(2)) {
+            var field = args.asString(1);
+
+            if ("o".equalsIgnoreCase(args.flags().lastFlag())) {
+                return TabCompleteUtil.completePlayers(args.flags().getIfPresent("o").map(Input::asString).orElse(""));
+            }
+
+            switch (field.toLowerCase()) {
+                case "brushname" -> {
+                    return sbr.storageRegistry().activeStorage().brushes().complete(player, args.get(1).asString());
+                }
+                case "name" -> {
+                    var name = args.get(0).asString();
+                    CommandAssertions.isFalse(configuration.tools().byName(name).isPresent(), "Name is already taken.");
+                    return TabCompleteUtil.completeFreeInput(name, 32, "name");
+
+                }
+                case "usages" -> {
+                    return TabCompleteUtil.completeMinInt(args.flags().getIfPresent("u").map(Input::asString).orElse(""), 1);
+
+                }
+                case "permission" -> {
+                    return Collections.singletonList("permission");
+                }
+                default -> {
+                    return Collections.singletonList("Unvalid field");
+                }
+            }
+
         }
+
         return Collections.emptyList();
     }
 }

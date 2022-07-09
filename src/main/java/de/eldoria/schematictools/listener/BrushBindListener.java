@@ -11,14 +11,19 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.command.tool.InvalidToolBindException;
 import com.sk89q.worldedit.extension.platform.Actor;
+import de.eldoria.eldoutilities.messages.MessageChannel;
 import de.eldoria.eldoutilities.messages.MessageSender;
+import de.eldoria.eldoutilities.messages.MessageType;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
+import de.eldoria.schematicbrush.brush.SchematicBrush;
 import de.eldoria.schematicbrush.util.WorldEditBrush;
 import de.eldoria.schematictools.configuration.Configuration;
 import de.eldoria.schematictools.util.SchematicTool;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -52,13 +57,20 @@ public class BrushBindListener implements Listener {
         bindTool(player, newItem);
     }
 
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onItemDrop(PlayerDropItemEvent event) {
+        unbindTool(event.getPlayer(), event.getItemDrop().getItemStack());
+    }
+
     public void unbindTool(Player player, ItemStack stack) {
         var toolId = SchematicTool.getToolId(stack);
         if (toolId.isEmpty()) return;
 
         try {
-            getLocalSession(player).setTool(BukkitAdapter.adapt(stack).getType(), null);
-            messageSender.sendMessage(player, "Deactivated schematic tool");
+            if (getLocalSession(player).getTool(BukkitAdapter.adapt(stack).getType()) instanceof SchematicBrush) {
+                getLocalSession(player).setTool(BukkitAdapter.adapt(stack).getType(), null);
+                messageSender.send(MessageChannel.ACTION_BAR, MessageType.NORMAL, player, "Deactivated schematic tool");
+            }
         } catch (InvalidToolBindException e) {
             throw new RuntimeException(e);
         }
@@ -73,25 +85,38 @@ public class BrushBindListener implements Listener {
 
         if (optTool.isEmpty()) {
             plugin.getLogger().warning("Brush Tool with ID " + toolMeta + " does not exist anymore.");
+            if (configuration.toolRemoval().isRemoveInvalidTools()) {
+                messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "Your tool broke.");
+                stack.setAmount(0);
+            }
             return;
         }
 
         var tool = optTool.get();
 
-        if (tool.hasUsage() && toolMeta.usages() >= tool.usages()) return;
-
+        if (tool.hasUsage() && toolMeta.usages() >= tool.usages()) {
+            if (configuration.toolRemoval().isRemoveUsed()) {
+                messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "The usages of your brush tool are exhausted.");
+                stack.setAmount(0);
+            }
+            return;
+        }
 
 
         tool.getBrush(sbr.storageRegistry().activeStorage())
                 .thenAccept(brush -> {
                     if (brush.isEmpty()) {
                         plugin.getLogger().warning("Tool " + tool + " has an invalid brush.");
+                        if (configuration.toolRemoval().isRemoveInvalidBrushes()) {
+                            messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "Your tool broke.");
+                            stack.setAmount(0);
+                        }
                         return;
                     }
 
                     var build = brush.get().snapshot().load(player, sbr.brushSettingsRegistry(), sbr.schematics()).build(plugin, player);
                     WorldEditBrush.setBrush(player, build, tool.permission());
-                    messageSender.sendMessage(player, "Activated schematic tool");
+                    messageSender.send(MessageChannel.ACTION_BAR, MessageType.NORMAL, player, "Activated schematic tool");
                 });
     }
 

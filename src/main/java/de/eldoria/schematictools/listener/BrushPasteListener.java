@@ -6,7 +6,9 @@
 
 package de.eldoria.schematictools.listener;
 
+import de.eldoria.eldoutilities.messages.MessageChannel;
 import de.eldoria.eldoutilities.messages.MessageSender;
+import de.eldoria.eldoutilities.messages.MessageType;
 import de.eldoria.schematicbrush.event.PostPasteEvent;
 import de.eldoria.schematicbrush.event.PrePasteEvent;
 import de.eldoria.schematictools.configuration.Configuration;
@@ -25,7 +27,8 @@ public class BrushPasteListener implements Listener {
 
     @EventHandler
     public void onPrePaste(PrePasteEvent event) {
-        var currentTool = SchematicTool.getCurrentTool(event.player());
+        var player = event.player();
+        var currentTool = SchematicTool.getCurrentTool(player);
         if (currentTool.isEmpty()) return;
 
         var toolMeta = currentTool.get();
@@ -36,17 +39,35 @@ public class BrushPasteListener implements Listener {
         var tool = optionalTool.get();
         if (!tool.hasUsage()) return;
 
-        if (tool.usages() >= toolMeta.usages()) {
+        if (toolMeta.usages() >= tool.usages()) {
             event.setCancelled(true);
-            messageSender.sendMessage(event.player(), "Usaged of schematic tool are exceeded.");
+            messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR,player, "The usages of your brush tool are exhausted.");
+            toolMeta.updateUsage(tool);
+            if (configuration.toolRemoval().isRemoveUsed()) {
+                SchematicTool.getPlayerItem(player).setAmount(0);
+            }
         }
     }
 
     @EventHandler
     public void onPostPaste(PostPasteEvent event) {
-        var currentTool = SchematicTool.getCurrentTool(event.player());
-        if (currentTool.isEmpty()) return;
+        var player = event.player();
+        var optToolMeta = SchematicTool.getCurrentTool(player);
+        if (optToolMeta.isEmpty()) return;
 
-        currentTool.get().incrementUsage();
+        var toolMeta = optToolMeta.get();
+        toolMeta.incrementUsage();
+
+        var optionalTool = configuration.tools().byId(toolMeta.id());
+        if (optionalTool.isEmpty()) return;
+        toolMeta.updateUsage(optionalTool.get());
+
+
+        if (toolMeta.usages() >= optionalTool.get().usages()) {
+            messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR,player, "The usages of your brush tool are exhausted.");
+            if (configuration.toolRemoval().isRemoveUsed()) {
+                SchematicTool.getPlayerItem(player).setAmount(0);
+            }
+        }
     }
 }

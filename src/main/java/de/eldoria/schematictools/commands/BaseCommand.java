@@ -22,14 +22,17 @@ import org.bukkit.plugin.Plugin;
 
 public class BaseCommand extends AdvancedCommand {
     public BaseCommand(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration, MessageBlocker messageBlocker) {
-        super(plugin, CommandMeta.builder("schematicTools")
-                .withSubCommand(new Bind(plugin, configuration))
-                .withSubCommand(new Create(plugin, sbr, configuration))
-                .withSubCommand(new List(plugin, messageBlocker, configuration))
-                .withSubCommand(new Info(plugin, messageBlocker, configuration))
-                .withSubCommand(new Modify(plugin, configuration, sbr))
-                .withSubCommand(new Remove(plugin, configuration))
-                .withSubCommand(new ChatBlock(plugin,messageBlocker))
+        super(plugin, CommandMeta.builder("schematictools")
+                .buildSubCommands((cmds, builder) -> {
+                    cmds.add(new Bind(plugin, configuration));
+                    cmds.add(new Create(plugin, sbr, configuration));
+                    cmds.add(new List(plugin, messageBlocker, configuration));
+                    var info = new Info(plugin, messageBlocker, configuration);
+                    cmds.add(info);
+                    cmds.add(new Modify(plugin, configuration, sbr, info));
+                    cmds.add(new Remove(plugin, configuration));
+                    cmds.add(new ChatBlock(plugin,messageBlocker));
+                })
                 .build());
     }
 }

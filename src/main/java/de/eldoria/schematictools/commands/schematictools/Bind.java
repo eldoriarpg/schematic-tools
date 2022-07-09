@@ -12,6 +12,7 @@ import de.eldoria.eldoutilities.commands.command.util.Arguments;
 import de.eldoria.eldoutilities.commands.command.util.CommandAssertions;
 import de.eldoria.eldoutilities.commands.exceptions.CommandException;
 import de.eldoria.eldoutilities.commands.executor.IPlayerTabExecutor;
+import de.eldoria.schematicbrush.util.WorldEditBrush;
 import de.eldoria.schematictools.configuration.Configuration;
 import de.eldoria.schematictools.util.Permissions;
 import de.eldoria.schematictools.util.SchematicTool;
@@ -21,6 +22,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 // Bind a Schematic Tool onto an item
@@ -38,12 +40,13 @@ public class Bind extends AdvancedCommand implements IPlayerTabExecutor {
     @Override
     public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
         var hand = player.getInventory().getItemInMainHand();
-        CommandAssertions.isFalse(hand == null || hand.getType() == Material.AIR, "Hold the item in your hand.");
-        // TODO: Check if blocks still can't be used for tools.
-        // CommandAssertions.isFalse(type.isBlock(), "Can not be bound on a block.");
+        CommandAssertions.isFalse(hand.getType() == Material.AIR, "Hold the item in your hand.");
+
+        CommandAssertions.isTrue(WorldEditBrush.canBeBound(hand), "No brush can be bound to this item.");
 
         var byName = configuration.tools().byName(args.get(0).asString());
         CommandAssertions.isTrue(byName.isPresent(), "Tool not found.");
+
 
         SchematicTool.initTool(hand, byName.get());
 
@@ -52,6 +55,9 @@ public class Bind extends AdvancedCommand implements IPlayerTabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
-        return IPlayerTabExecutor.super.onTabComplete(player, alias, args);
+        if (args.sizeIs(1)) {
+            return configuration.tools().complete(args.asString(0));
+        }
+        return Collections.emptyList();
     }
 }

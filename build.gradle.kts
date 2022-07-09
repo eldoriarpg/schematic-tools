@@ -41,7 +41,7 @@ publishData {
     addRepo(Repo.main("", "https://eldonexus.de/repository/maven-releases/", false))
     addRepo(Repo.dev("DEV", "https://eldonexus.de/repository/maven-dev/", true))
     addRepo(Repo.snapshot("SNAPSHOT", "https://eldonexus.de/repository/maven-snapshots/", true))
-    publishComponent("java")
+    publishTask("shadowJar")
 }
 
 publishing {
@@ -124,9 +124,9 @@ bukkit {
     depend = listOf("SchematicBrushReborn")
 
     commands {
-        register("schematicTools") {
+        register("schematictools") {
             description = "Base command of schematic tools"
-            permission = "schematictools"
+            permission = "schematictools.use"
             aliases = listOf("sbt")
         }
     }

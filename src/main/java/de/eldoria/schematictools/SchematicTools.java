@@ -27,7 +27,7 @@ public class SchematicTools extends EldoPlugin {
     @Override
     public void onPluginEnable() throws Throwable {
         var sbr = SchematicBrushReborn.instance();
-        MessageSender messageSender = MessageSender.create(this, "[ST]");
+        var messageSender = MessageSender.create(this, "§6[ST]");
         var messageBlocker = MessageBlockerAPI.builder(this).addWhitelisted("[ST]").build();
         ILocalizer.create(this, "en_US").setLocale("en_US");
         configuration = new Configuration(this);

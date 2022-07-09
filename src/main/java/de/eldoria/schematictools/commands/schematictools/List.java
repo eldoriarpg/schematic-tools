@@ -84,7 +84,7 @@ public class List extends AdvancedCommand implements IPlayerTabExecutor {
     protected void send(MessageComposer composer, Player player) {
         composer.prependLines(20);
         messageBlocker.blockPlayer(player);
-        messageBlocker.ifEnabled(() -> composer.newLine().text("<click:run_command:'/schematicTools chatblock false'><%s>[x]</click>", Colors.REMOVE));
+        messageBlocker.ifEnabled(() -> composer.newLine().text("<click:run_command:'/schematictools chatblock false'><%s>[x]</click>", Colors.REMOVE));
         messageBlocker.announce(player, "[x]");
         audiences.sender(player).sendMessage(miniMessage.deserialize(composer.build()));
     }
