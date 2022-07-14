@@ -85,7 +85,6 @@ tasks {
         relocate("de.eldoria.messageblocker", "de.eldoria.schematicbrush.libs.messageblocker")
         relocate("net.kyori", "de.eldoria.schematicbrush.libs.kyori")
         archiveBaseName.set("SchematicTools")
-        archiveClassifier.set("")
         mergeServiceFiles()
     }
 
