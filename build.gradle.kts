@@ -41,7 +41,7 @@ publishData {
     addRepo(Repo.main("", "https://eldonexus.de/repository/maven-releases/", false))
     addRepo(Repo.dev("DEV", "https://eldonexus.de/repository/maven-dev/", true))
     addRepo(Repo.snapshot("SNAPSHOT", "https://eldonexus.de/repository/maven-snapshots/", true))
-    publishTask("shadowJar")
+    publishComponent("java")
 }
 
 publishing {
@@ -87,17 +87,6 @@ tasks {
         archiveBaseName.set("SchematicTools")
         archiveClassifier.set("")
         mergeServiceFiles()
-    }
-
-    processResources {
-        from(sourceSets.main.get().resources.srcDirs) {
-            filesMatching("plugin.yml") {
-                expand(
-                    "version" to publishData.getVersion(true)
-                )
-            }
-            duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        }
     }
 
     register<Copy>("copyToServer") {
