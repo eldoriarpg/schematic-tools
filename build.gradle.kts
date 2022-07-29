@@ -3,7 +3,7 @@ import de.chojo.Repo
 plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("de.chojo.publishdata") version "1.0.4"
+    id("de.chojo.publishdata") version "1.0.8"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
     java
     `maven-publish`
