@@ -9,6 +9,7 @@ package de.eldoria.schematictools.listener;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.command.tool.BrushTool;
 import com.sk89q.worldedit.command.tool.InvalidToolBindException;
 import com.sk89q.worldedit.extension.platform.Actor;
 import de.eldoria.eldoutilities.messages.MessageChannel;
@@ -73,12 +74,13 @@ public class BrushBindListener implements Listener {
         if (toolId.isEmpty()) return;
 
         try {
-            if (getLocalSession(player).getTool(BukkitAdapter.adapt(stack).getType()) instanceof SchematicBrush) {
+            if (getLocalSession(player).getTool(BukkitAdapter.adapt(stack).getType()) instanceof BrushTool tool
+                && tool.getBrush() instanceof SchematicBrush) {
                 getLocalSession(player).setTool(BukkitAdapter.adapt(stack).getType(), null);
-                messageSender.send(MessageChannel.ACTION_BAR, MessageType.NORMAL, player, "Deactivated schematic tool");
+                messageSender.send(MessageChannel.ACTION_BAR, MessageType.NORMAL, player, "§6Deactivated schematic tool");
             }
         } catch (InvalidToolBindException e) {
-            throw new RuntimeException(e);
+
         }
     }
 
@@ -90,9 +92,9 @@ public class BrushBindListener implements Listener {
         var optTool = configuration.tools().byId(toolMeta.id());
 
         if (optTool.isEmpty()) {
-            plugin.getLogger().warning("Brush Tool with ID " + toolMeta + " does not exist anymore.");
+            plugin.getLogger().warning("Brush Tool with ID " + toolMeta + " of player" + player.getName() + "does not exist anymore.");
             if (configuration.toolRemoval().isRemoveInvalidTools()) {
-                messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "Your tool broke.");
+                messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "§4Your tool broke.");
                 stack.setAmount(0);
             }
             return;
@@ -102,7 +104,7 @@ public class BrushBindListener implements Listener {
 
         if (tool.hasUsage() && toolMeta.usages() >= tool.usages()) {
             if (configuration.toolRemoval().isRemoveUsed()) {
-                messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "The usages of your brush tool are exhausted.");
+                messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "§4The usages of your brush tool are exhausted.");
                 stack.setAmount(0);
             }
             return;
@@ -114,9 +116,9 @@ public class BrushBindListener implements Listener {
         tool.getBrush(sbr.storageRegistry().activeStorage())
                 .thenAccept(brush -> {
                     if (brush.isEmpty()) {
-                        plugin.getLogger().warning("Tool " + tool + " has an invalid brush.");
+                        plugin.getLogger().warning("Tool " + tool + " of player " + player.getName() + "has an invalid brush.");
                         if (configuration.toolRemoval().isRemoveInvalidBrushes()) {
-                            messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "Your tool broke.");
+                            messageSender.send(MessageChannel.ACTION_BAR, MessageType.ERROR, player, "§4Your tool broke.");
                             stack.setAmount(0);
                         }
                         return;
@@ -124,7 +126,7 @@ public class BrushBindListener implements Listener {
 
                     var build = brush.get().snapshot().load(player, sbr.brushSettingsRegistry(), sbr.schematics()).build(plugin, player);
                     WorldEditBrush.setBrush(player, build, tool.permission());
-                    messageSender.send(MessageChannel.ACTION_BAR, MessageType.NORMAL, player, "Activated schematic tool");
+                    messageSender.send(MessageChannel.ACTION_BAR, MessageType.NORMAL, player, "§6Activated schematic tool");
                 });
     }
 }
