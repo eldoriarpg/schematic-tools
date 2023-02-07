@@ -1,6 +1,6 @@
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/eldoriarpg/schematic-tools/Verify%20state?style=for-the-badge&label=Building)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/eldoriarpg/schematic-tools/Publish%20to%20Nexus?style=for-the-badge&label=Publishing) \
-![Sonatype Nexus (Releases)](https://img.shields.io/nexus/maven-releases/de.eldoria/schematic-tools-api?label=Release&logo=Release&server=https%3A%2F%2Feldonexus.de&style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/eldoriarpg/schematic-tools/verify.yml?branch=main&style=for-the-badge&label=Building)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/eldoriarpg/schematic-tools/publish_to_nexus.yml?branch=main&style=for-the-badge&label=Publishing) \
+![Sonatype Nexus (Releases)](https://img.shields.io/nexus/maven-releases/de.eldoria/schematic-tools?label=Release&logo=Release&server=https%3A%2F%2Feldonexus.de&style=for-the-badge)
 ![Sonatype Nexus (Development)](https://img.shields.io/nexus/maven-dev/de.eldoria/schematic-tools?label=DEV&logo=Release&server=https%3A%2F%2Feldonexus.de&style=for-the-badge)
 ![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/de.eldoria/schematic-tools?color=orange&label=Snapshot&server=https%3A%2F%2Feldonexus.de&style=for-the-badge)
 
