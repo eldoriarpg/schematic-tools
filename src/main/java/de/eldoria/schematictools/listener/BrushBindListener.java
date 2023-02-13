@@ -125,7 +125,7 @@ public class BrushBindListener implements Listener {
                     }
 
                     var build = brush.get().snapshot().load(player, sbr.brushSettingsRegistry(), sbr.schematics()).build(plugin, player);
-                    WorldEditBrush.setBrush(player, build, tool.permission());
+                    WorldEditBrush.setBrush(player, stack, build, tool.permission());
                     messageSender.send(MessageChannel.ACTION_BAR, MessageType.NORMAL, player, "§6Activated schematic tool");
                 });
     }

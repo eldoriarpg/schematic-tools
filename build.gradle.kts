@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "de.eldoria"
-version = "1.0.0"
+version = "1.0.1"
 
 repositories {
     maven("https://eldonexus.de/repository/maven-public/")
@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.4.0")
+    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.4.1")
     compileOnly("org.spigotmc", "spigot-api", "1.14.4-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.2.13")
 
