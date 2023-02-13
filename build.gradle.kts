@@ -3,14 +3,14 @@ import de.chojo.Repo
 plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("de.chojo.publishdata") version "1.0.8"
+    id("de.chojo.publishdata") version "1.0.9"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
     java
     `maven-publish`
 }
 
 group = "de.eldoria"
-version = "1.0.0"
+version = "1.0.1"
 
 repositories {
     maven("https://eldonexus.de/repository/maven-public/")
@@ -18,12 +18,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.2.3")
+    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.4.1")
     compileOnly("org.spigotmc", "spigot-api", "1.14.4-R0.1-SNAPSHOT")
-    compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.2.10")
+    compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.2.13")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
 license {
