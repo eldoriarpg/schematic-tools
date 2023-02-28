@@ -1,10 +1,10 @@
 import de.chojo.Repo
 
 plugins {
-    id("org.cadixdev.licenser") version "0.6.1"
+    id("com.diffplug.spotless") version "6.15.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("de.chojo.publishdata") version "1.0.9"
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
     java
     `maven-publish`
 }
@@ -26,9 +26,11 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
-license {
-    header(rootProject.file("HEADER.txt"))
-    include("**/*.java")
+spotless{
+    java{
+        licenseHeaderFile(rootProject.file("HEADER.txt"))
+        target("**/*.java")
+    }
 }
 
 java {
