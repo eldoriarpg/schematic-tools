@@ -3,7 +3,7 @@ import de.chojo.Repo
 plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("com.github.johnrengelman.shadow") version "8.1.0"
-    id("de.chojo.publishdata") version "1.1.0"
+    id("de.chojo.publishdata") version "1.2.1"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
     java
     `maven-publish`
@@ -38,9 +38,8 @@ java {
 }
 
 publishData {
-    addRepo(Repo.main("", "https://eldonexus.de/repository/maven-releases/", false))
-    addRepo(Repo.dev("DEV", "https://eldonexus.de/repository/maven-dev/", true))
-    addRepo(Repo.snapshot("SNAPSHOT", "https://eldonexus.de/repository/maven-snapshots/", true))
+    addBuildData()
+    useEldoNexusRepos()
     publishComponent("java")
 }
 
