@@ -32,16 +32,14 @@ license {
 }
 
 java {
-    addBuildData()
     withSourcesJar()
     withJavadocJar()
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
 publishData {
-    addRepo(Repo.main("", "https://eldonexus.de/repository/maven-releases/", false))
-    addRepo(Repo.dev("DEV", "https://eldonexus.de/repository/maven-dev/", true))
-    addRepo(Repo.snapshot("SNAPSHOT", "https://eldonexus.de/repository/maven-snapshots/", true))
+    addBuildData()
+    useEldoNexusRepos()
     publishComponent("java")
 }
 
