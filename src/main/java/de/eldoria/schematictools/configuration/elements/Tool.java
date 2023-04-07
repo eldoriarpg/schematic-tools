@@ -29,7 +29,7 @@ public class Tool implements ConfigurationSerializable {
     /**
      * The unique numeric id of the brush
      */
-    private final int id;
+    private int id;
     /**
      * The owner of the underlying brush
      */
@@ -45,6 +45,9 @@ public class Tool implements ConfigurationSerializable {
     @Nullable
     private String permission;
     private int usages;
+
+    public Tool() {
+    }
 
     public Tool(UUID owner, String name, String brushName, int id, String permission, int usages) {
         this.owner = owner;

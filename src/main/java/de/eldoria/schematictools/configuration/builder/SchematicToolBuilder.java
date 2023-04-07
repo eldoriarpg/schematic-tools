@@ -3,7 +3,9 @@
  *
  *     Copyright (C) EldoriaRPG Team and Contributor
  */
-package de.eldoria.schematictools.configuration.elements;
+package de.eldoria.schematictools.configuration.builder;
+
+import de.eldoria.schematictools.configuration.elements.Tool;
 
 import java.util.UUID;
 
