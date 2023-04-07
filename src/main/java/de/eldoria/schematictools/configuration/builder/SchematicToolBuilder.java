@@ -1,10 +1,11 @@
 /*
  *     SPDX-License-Identifier: AGPL-3.0-only
  *
- *     Copyright (C) 2021 EldoriaRPG Team and Contributor
+ *     Copyright (C) EldoriaRPG Team and Contributor
  */
+package de.eldoria.schematictools.configuration.builder;
 
-package de.eldoria.schematictools.configuration.elements;
+import de.eldoria.schematictools.configuration.elements.Tool;
 
 import java.util.UUID;
 

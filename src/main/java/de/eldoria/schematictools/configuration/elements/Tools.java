@@ -1,12 +1,12 @@
 /*
  *     SPDX-License-Identifier: AGPL-3.0-only
  *
- *     Copyright (C) 2021 EldoriaRPG Team and Contributor
+ *     Copyright (C) EldoriaRPG Team and Contributor
  */
-
 package de.eldoria.schematictools.configuration.elements;
 
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
+import de.eldoria.schematictools.configuration.builder.SchematicToolBuilder;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.NotNull;

@@ -1,9 +1,8 @@
 /*
  *     SPDX-License-Identifier: AGPL-3.0-only
  *
- *     Copyright (C) 2021 EldoriaRPG Team and Contributor
+ *     Copyright (C) EldoriaRPG Team and Contributor
  */
-
 package de.eldoria.schematictools.commands.schematictools;
 
 import de.eldoria.eldoutilities.commands.command.AdvancedCommand;
@@ -19,7 +18,7 @@ import de.eldoria.eldoutilities.utils.Futures;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
 import de.eldoria.schematictools.commands.schematictools.util.BrushLoader;
 import de.eldoria.schematictools.configuration.Configuration;
-import de.eldoria.schematictools.configuration.elements.SchematicToolBuilder;
+import de.eldoria.schematictools.configuration.builder.SchematicToolBuilder;
 import de.eldoria.schematictools.util.Permissions;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
