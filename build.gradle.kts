@@ -22,13 +22,6 @@ dependencies {
     compileOnly("org.spigotmc", "spigot-api", "1.14.4-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.2.14")
 
-
-    bukkitLibrary("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2")
-    bukkitLibrary("com.fasterxml.jackson.core:jackson-core:2.14.2")
-    bukkitLibrary("com.fasterxml.jackson.core:jackson-databind:2.14.2")
-    bukkitLibrary("net.kyori:adventure-platform-bukkit:4.3.0")
-    bukkitLibrary("net.kyori:adventure-text-minimessage:4.13.0")
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
