@@ -1,16 +1,16 @@
 import de.chojo.Repo
 
 plugins {
-    id("com.diffplug.spotless") version "6.15.0"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("de.chojo.publishdata") version "1.0.9"
+    id("com.diffplug.spotless") version "6.18.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("de.chojo.publishdata") version "1.2.4"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
     java
     `maven-publish`
 }
 
 group = "de.eldoria"
-version = "1.0.1"
+version = "1.1.0"
 
 repositories {
     maven("https://eldonexus.de/repository/maven-public/")
@@ -18,16 +18,16 @@ repositories {
 }
 
 dependencies {
-    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.4.1")
+    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.5.0")
     compileOnly("org.spigotmc", "spigot-api", "1.14.4-R0.1-SNAPSHOT")
-    compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.2.13")
+    compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.2.14")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
-spotless{
-    java{
+spotless {
+    java {
         licenseHeaderFile(rootProject.file("HEADER.txt"))
         target("**/*.java")
     }
@@ -40,9 +40,8 @@ java {
 }
 
 publishData {
-    addRepo(Repo.main("", "https://eldonexus.de/repository/maven-releases/", false))
-    addRepo(Repo.dev("DEV", "https://eldonexus.de/repository/maven-dev/", true))
-    addRepo(Repo.snapshot("SNAPSHOT", "https://eldonexus.de/repository/maven-snapshots/", true))
+    addBuildData()
+    useEldoNexusRepos()
     publishComponent("java")
 }
 
@@ -85,7 +84,6 @@ tasks {
     shadowJar {
         relocate("de.eldoria.eldoutilities", "de.eldoria.schematicbrush.libs.eldoutilities")
         relocate("de.eldoria.messageblocker", "de.eldoria.schematicbrush.libs.messageblocker")
-        relocate("net.kyori", "de.eldoria.schematicbrush.libs.kyori")
         archiveBaseName.set("SchematicTools")
         mergeServiceFiles()
     }
@@ -109,7 +107,7 @@ tasks {
 bukkit {
     name = "SchematicTools"
     main = "de.eldoria.schematictools.SchematicTools"
-    apiVersion = "1.14"
+    apiVersion = "1.16"
     authors = listOf("RainbowDashLabs")
     depend = listOf("SchematicBrushReborn")
 

@@ -18,7 +18,7 @@ import de.eldoria.eldoutilities.utils.Futures;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
 import de.eldoria.schematictools.commands.schematictools.util.BrushLoader;
 import de.eldoria.schematictools.configuration.Configuration;
-import de.eldoria.schematictools.configuration.elements.SchematicToolBuilder;
+import de.eldoria.schematictools.configuration.builder.SchematicToolBuilder;
 import de.eldoria.schematictools.util.Permissions;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
