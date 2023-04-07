@@ -7,7 +7,9 @@ package de.eldoria.schematictools.configuration;
 
 import de.eldoria.schematictools.configuration.elements.ToolRemoval;
 
+@SuppressWarnings("FieldMayBeFinal")
 public class ConfigFile {
+    private boolean updateCheck = true;
     private ToolRemoval toolRemoval = new ToolRemoval();
 
     public ToolRemoval toolRemoval() {
@@ -16,5 +18,9 @@ public class ConfigFile {
 
     public void toolRemoval(ToolRemoval toolRemoval) {
         this.toolRemoval = toolRemoval;
+    }
+
+    public boolean updateCheck() {
+        return updateCheck;
     }
 }

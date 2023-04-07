@@ -9,6 +9,8 @@ import de.eldoria.eldoutilities.config.template.PluginBaseConfiguration;
 import de.eldoria.eldoutilities.localization.ILocalizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
+import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateChecker;
+import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateData;
 import de.eldoria.messageblocker.MessageBlockerAPI;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
 import de.eldoria.schematictools.commands.BaseCommand;
@@ -44,6 +46,10 @@ public class SchematicTools extends EldoPlugin {
             base.version(1);
             base.lastInstalledVersion(this);
             configuration.save();
+        }
+
+        if (configuration.main().updateCheck()) {
+            LynaUpdateChecker.lyna(LynaUpdateData.builder(this, 6).build()).start();
         }
 
         registerCommand(new BaseCommand(this, sbr, configuration, messageBlocker));
