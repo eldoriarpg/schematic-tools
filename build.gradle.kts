@@ -1,7 +1,7 @@
 import de.chojo.Repo
 
 plugins {
-    id("com.diffplug.spotless") version "6.18.0"
+    id("com.diffplug.spotless") version "6.19.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("de.chojo.publishdata") version "1.2.4"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
