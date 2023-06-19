@@ -20,7 +20,7 @@ repositories {
 dependencies {
     compileOnly("de.eldoria", "schematicbrushreborn-api", "2.5.0")
     compileOnly("org.spigotmc", "spigot-api", "1.14.4-R0.1-SNAPSHOT")
-    compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.2.14")
+    compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.2.15")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.3")
