@@ -3,7 +3,7 @@ import de.chojo.Repo
 plugins {
     id("com.diffplug.spotless") version "6.24.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("de.chojo.publishdata") version "1.3.0"
+    id("de.chojo.publishdata") version "1.4.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     java
     `maven-publish`
