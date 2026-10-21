@@ -1,0 +1,99 @@
+/*
+ *     SPDX-License-Identifier: AGPL-3.0-only
+ *
+ *     Copyright (C) EldoriaRPG Team and Contributor
+ */
+package de.eldoria.schematictools.updates;
+
+import de.eldoria.eldoutilities.updater.AutoUpdateDecision;
+import de.eldoria.eldoutilities.updater.Updater;
+import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateData;
+import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateResponse;
+import de.eldoria.schematictools.configuration.Configuration;
+import de.eldoria.schematictools.configuration.elements.UpdateSettings;
+import de.eldoria.schematictools.util.Permissions;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Looks for new Schematic Tools versions on Eldoria's release service Lyna. A new version is told to the console and,
+ * on join, to players with {@link Permissions#UPDATES}. With auto update on, a new release within the current major
+ * version is downloaded into the server's update folder and takes effect on the next start. Otherwise admins are
+ * offered to download it and to switch auto update on from chat; their choice is written to {@code config.yml}.
+ */
+public final class Updates {
+    /**
+     * Lyna's product id of Schematic Tools.
+     */
+    static final int PRODUCT = 6;
+
+    static final String DOWNLOAD = "https://github.com/eldoriarpg/schematic-tools/releases/latest";
+    private final Plugin plugin;
+    private final Configuration configuration;
+    private @Nullable Updater<LynaUpdateResponse, LynaUpdateData> updater;
+
+    /**
+     * @param plugin        the plugin whose versions are looked up
+     * @param configuration where the update settings are read and an admin's choice is written
+     */
+    public Updates(Plugin plugin, Configuration configuration) {
+        this.plugin = plugin;
+        this.configuration = configuration;
+    }
+
+    /**
+     * Applies the current update settings: starts looking for new versions, hands the running updater the new
+     * settings, or stops it when the settings neither want to hear about new versions nor download them.
+     */
+    public void apply() {
+        UpdateSettings settings = configuration.updates();
+        if (!settings.notice() && !settings.autoUpdate()) {
+            stop();
+            return;
+        }
+        LynaUpdateData data = data(settings);
+        if (updater == null) {
+            updater = Updater.lyna(data);
+            updater.start();
+        } else {
+            updater.reconfigure(data);
+        }
+    }
+
+    /**
+     * Stops looking for new versions.
+     */
+    public void stop() {
+        if (updater != null) updater.stop();
+        updater = null;
+    }
+
+    private LynaUpdateData data(UpdateSettings settings) {
+        return LynaUpdateData.builder(plugin, PRODUCT)
+                .notifyPermission(Permissions.UPDATES)
+                .notifyUpdate(settings.notice())
+                .autoUpdate(settings.autoUpdate())
+                .askForAutoUpdate(settings.askForAutoUpdate())
+                .autoUpdateHook(this::decided)
+                .updateUrl(DOWNLOAD)
+                .build();
+    }
+
+    private void decided(AutoUpdateDecision decision) {
+        decide(configuration.updates(), decision);
+        configuration.save();
+    }
+
+    /**
+     * Writes what an admin chose in chat into the settings.
+     *
+     * @param settings the settings to change
+     * @param decision what an admin chose in chat
+     */
+    static void decide(UpdateSettings settings, AutoUpdateDecision decision) {
+        switch (decision) {
+            case ENABLED -> settings.autoUpdate(true);
+            case NEVER_ASK -> settings.askForAutoUpdate(false);
+        }
+    }
+}

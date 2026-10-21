@@ -8,6 +8,7 @@ package de.eldoria.schematictools.configuration;
 import de.eldoria.eldoutilities.config.JacksonConfig;
 import de.eldoria.schematictools.configuration.elements.ToolRemoval;
 import de.eldoria.schematictools.configuration.elements.Tools;
+import de.eldoria.schematictools.configuration.elements.UpdateSettings;
 import dev.chojo.ocular.key.Key;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -29,5 +30,10 @@ public class JacksonConfiguration extends JacksonConfig<ConfigFile> implements C
     @Override
     public ToolRemoval toolRemoval() {
         return main().toolRemoval();
+    }
+
+    @Override
+    public UpdateSettings updates() {
+        return main().updates();
     }
 }
