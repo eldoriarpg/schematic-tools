@@ -58,7 +58,9 @@ spotless {
 
 publishData {
     eldoNexus(dev = false)
-    buildData()
+    buildData {
+        put("lynaProduct", "6")
+    }
 }
 
 publishing {

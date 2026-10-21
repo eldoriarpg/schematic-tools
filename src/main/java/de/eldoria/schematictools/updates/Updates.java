@@ -22,12 +22,7 @@ import org.jetbrains.annotations.Nullable;
  * offered to download it and to switch auto update on from chat; their choice is written to {@code config.yml}.
  */
 public final class Updates {
-    /**
-     * Lyna's product id of Schematic Tools.
-     */
-    static final int PRODUCT = 6;
 
-    static final String DOWNLOAD = "https://github.com/eldoriarpg/schematic-tools/releases/latest";
     private final Plugin plugin;
     private final Configuration configuration;
     private @Nullable Updater<LynaUpdateResponse, LynaUpdateData> updater;
@@ -69,13 +64,12 @@ public final class Updates {
     }
 
     private LynaUpdateData data(UpdateSettings settings) {
-        return LynaUpdateData.builder(plugin, PRODUCT)
+        return LynaUpdateData.builder(plugin)
                 .notifyPermission(Permissions.UPDATES)
                 .notifyUpdate(settings.notice())
                 .autoUpdate(settings.autoUpdate())
                 .askForAutoUpdate(settings.askForAutoUpdate())
                 .autoUpdateHook(this::decided)
-                .updateUrl(DOWNLOAD)
                 .build();
     }
 
