@@ -29,7 +29,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-// Modify an existing Schematic Tool
+/**
+ * Modifies an existing schematic tool.
+ */
 public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
     private final Configuration configuration;
     private final SchematicBrushReborn sbr;

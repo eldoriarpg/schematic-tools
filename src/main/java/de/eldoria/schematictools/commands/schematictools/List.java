@@ -11,8 +11,6 @@ import de.eldoria.eldoutilities.commands.command.util.Arguments;
 import de.eldoria.eldoutilities.commands.exceptions.CommandException;
 import de.eldoria.eldoutilities.commands.executor.IPlayerTabExecutor;
 import de.eldoria.eldoutilities.localization.MessageComposer;
-import de.eldoria.messageblocker.blocker.MessageBlocker;
-import de.eldoria.schematicbrush.util.Colors;
 import de.eldoria.schematictools.configuration.Configuration;
 import de.eldoria.schematictools.configuration.elements.Tool;
 import de.eldoria.schematictools.configuration.elements.Tools;
@@ -23,19 +21,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-// List schematic tool configurations
+/**
+ * Lists the schematic tool configurations.
+ */
 public class List extends AdvancedCommand implements IPlayerTabExecutor {
     public final int PAGE_SIZE = 15;
     public final String RIGHT_ARROW = "»»»";
     public final String LEFT_ARROW = "«««";
-    private final MessageBlocker messageBlocker;
     private final Configuration configuration;
 
-    public List(Plugin plugin, MessageBlocker messageBlocker, Configuration configuration) {
+    public List(Plugin plugin, Configuration configuration) {
         super(plugin, CommandMeta.builder("list")
                 .withPermission(Permissions.LIST)
                 .build());
-        this.messageBlocker = messageBlocker;
         this.configuration = configuration;
     }
 
@@ -45,13 +43,13 @@ public class List extends AdvancedCommand implements IPlayerTabExecutor {
         var tools = configuration.tools();
         var composer = MessageComposer.create();
         addPageHeader(composer, "words.tools");
-        addEntries(composer, tools.page(0, PAGE_SIZE), Tool::asListComponent);
+        addEntries(composer, tools.page(index, PAGE_SIZE), Tool::asListComponent);
         addPageFooter(composer, index, tools);
         send(composer, player);
     }
 
     protected void addPageHeader(MessageComposer composer, String title) {
-        composer.text("<%s>", Colors.HEADING).localeCode(title).newLine();
+        composer.text("<heading>").localeCode(title).newLine();
     }
 
     protected <T> void addEntries(MessageComposer composer, java.util.List<T> entries, Function<T, String> map) {
@@ -62,24 +60,21 @@ public class List extends AdvancedCommand implements IPlayerTabExecutor {
     protected void addPageFooter(MessageComposer composer, int index, Tools paged) {
         var baseCommand = "/" + meta().createCommandCall();
         if (index == 0) {
-            composer.text("<%s>%s", Colors.INACTIVE, LEFT_ARROW);
+            composer.text("<inactive>%s", LEFT_ARROW);
         } else {
-            composer.text("<click:run_command:'%s %s'><%s>%s</click>", baseCommand, index - 1, Colors.CHANGE, LEFT_ARROW);
+            composer.text("<click:run_command:'%s %s'><change>%s</click>", baseCommand, index - 1, LEFT_ARROW);
         }
-        composer.text(" <%s>%s / %s ", Colors.NEUTRAL, index + 1, Math.max(1, paged.pages(PAGE_SIZE)));
+        composer.text(" <neutral>%s / %s ", index + 1, Math.max(1, paged.pages(PAGE_SIZE)));
 
         if (index + 1 >= paged.pages(PAGE_SIZE)) {
-            composer.text("<%s>%s", Colors.INACTIVE, RIGHT_ARROW);
+            composer.text("<inactive>%s", RIGHT_ARROW);
         } else {
-            composer.text("<click:run_command:'%s %s'><%s>%s</click>", baseCommand, index + 1, Colors.CHANGE, RIGHT_ARROW);
+            composer.text("<click:run_command:'%s %s'><change>%s</click>", baseCommand, index + 1, RIGHT_ARROW);
         }
     }
 
     protected void send(MessageComposer composer, Player player) {
         composer.prependLines(20);
-        messageBlocker.blockPlayer(player);
-        messageBlocker.ifEnabled(() -> composer.newLine().text("<click:run_command:'/schematictools chatblock false'><%s>[x]</click>", Colors.REMOVE));
-        messageBlocker.announce(player, "[x]");
         messageSender().sendMessage(player, composer.build());
     }
 }

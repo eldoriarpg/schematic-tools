@@ -24,7 +24,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-// Bind a Schematic Tool onto an item
+/**
+ * Binds a schematic tool onto an item.
+ */
 public class Bind extends AdvancedCommand implements IPlayerTabExecutor {
     private final Configuration configuration;
 

@@ -5,39 +5,18 @@
  */
 package de.eldoria.schematictools.configuration.elements;
 
-import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import de.eldoria.schematictools.configuration.builder.SchematicToolBuilder;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.SerializableAs;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-@SerializableAs("stTools")
-public class Tools implements ConfigurationSerializable {
+public class Tools {
     private List<Tool> tools = new ArrayList<>();
     private int currentId = 0;
 
-    public Tools(Map<String, Object> objectMap) {
-        var map = SerializationUtil.mapOf(objectMap);
-        tools = map.getValue("tools");
-        currentId = map.getValue("currentId");
-    }
-
     public Tools() {
-    }
-
-    @Override
-    @NotNull
-    public Map<String, Object> serialize() {
-        return SerializationUtil.newBuilder()
-                .add("tools", tools)
-                .add("currentId", currentId)
-                .build();
     }
 
     public List<Tool> tools() {

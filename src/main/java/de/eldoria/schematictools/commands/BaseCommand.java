@@ -7,10 +7,8 @@ package de.eldoria.schematictools.commands;
 
 import de.eldoria.eldoutilities.commands.command.AdvancedCommand;
 import de.eldoria.eldoutilities.commands.command.CommandMeta;
-import de.eldoria.messageblocker.blocker.MessageBlocker;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
 import de.eldoria.schematictools.commands.schematictools.Bind;
-import de.eldoria.schematictools.commands.schematictools.ChatBlock;
 import de.eldoria.schematictools.commands.schematictools.Create;
 import de.eldoria.schematictools.commands.schematictools.Info;
 import de.eldoria.schematictools.commands.schematictools.List;
@@ -20,17 +18,16 @@ import de.eldoria.schematictools.configuration.Configuration;
 import org.bukkit.plugin.Plugin;
 
 public class BaseCommand extends AdvancedCommand {
-    public BaseCommand(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration, MessageBlocker messageBlocker) {
+    public BaseCommand(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration) {
         super(plugin, CommandMeta.builder("schematictools")
                 .buildSubCommands((cmds, builder) -> {
                     cmds.add(new Bind(plugin, configuration));
                     cmds.add(new Create(plugin, sbr, configuration));
-                    cmds.add(new List(plugin, messageBlocker, configuration));
-                    var info = new Info(plugin, messageBlocker, configuration);
+                    cmds.add(new List(plugin, configuration));
+                    var info = new Info(plugin, configuration);
                     cmds.add(info);
                     cmds.add(new Modify(plugin, configuration, sbr, info));
                     cmds.add(new Remove(plugin, configuration));
-                    cmds.add(new ChatBlock(plugin, messageBlocker));
                 })
                 .build());
     }

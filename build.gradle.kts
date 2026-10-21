@@ -1,28 +1,46 @@
 plugins {
-    id("com.diffplug.spotless") version "7.2.1"
-    id("com.gradleup.shadow") version "8.3.5"
-    id("de.chojo.publishdata") version "1.4.0"
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("xyz.jpenilla.run-paper") version "2.3.1"
     java
     `maven-publish`
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.publishdata)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.pluginyml.bukkit)
+    alias(libs.plugins.runserver)
 }
 
-group = "de.eldoria"
-version = "1.1.2"
-
 repositories {
+    mavenCentral()
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://eldonexus.de/repository/maven-public/")
     maven("https://eldonexus.de/repository/maven-proxies/")
 }
 
 dependencies {
-    compileOnly("de.eldoria", "schematicbrushreborn-api", "2.7.3")
-    compileOnly("org.spigotmc", "spigot-api", "1.14.4-R0.1-SNAPSHOT")
-    compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "7.3.15")
+    compileOnly(libs.paper)
+    compileOnly(libs.jetbrains.annotations)
+    compileOnly(libs.schematicbrushreborn.api)
+    compileOnly(libs.bundles.utilities)
+    compileOnly(platform(libs.jackson.bom))
+    compileOnly(libs.bundles.jackson)
+    compileOnly(libs.fawe.core) {
+        exclude("com.intellectualsites.paster")
+        exclude("net.kyori")
+    }
+    compileOnly(libs.fawe.bukkit) {
+        exclude("net.kyori")
+    }
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.4")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.13.4")
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 spotless {
@@ -32,36 +50,28 @@ spotless {
     }
 }
 
-java {
-    withSourcesJar()
-    withJavadocJar()
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
 publishData {
-    addBuildData()
-    useEldoNexusRepos()
-    publishComponent("java")
+    eldoNexus(dev = false)
+    buildData()
 }
 
 publishing {
-    publications.create<MavenPublication>("maven") {
-        publishData.configurePublication(this)
-    }
-
-    repositories {
-        maven {
-            authentication {
-                credentials(PasswordCredentials::class) {
-                    username = System.getenv("NEXUS_USERNAME")
-                    password = System.getenv("NEXUS_PASSWORD")
+    publications.withType<MavenPublication>().configureEach {
+        pom {
+            url.set("https://github.com/eldoriarpg/schematic-tools")
+            developers {
+                developer {
+                    name.set("Nora Fülling")
+                    organization.set("EldoriaRPG")
+                    organizationUrl.set("https://github.com/eldoriarpg")
                 }
             }
-
-            setUrl(publishData.getRepository())
-            name = "EldoNexus"
+            licenses {
+                license {
+                    name.set("GNU Affero General Public License v3.0")
+                    url.set("https://github.com/eldoriarpg/schematic-tools/blob/main/LICENSE.md")
+                }
+            }
         }
     }
 }
@@ -76,6 +86,7 @@ tasks {
     }
 
     test {
+        dependsOn(spotlessCheck)
         useJUnitPlatform()
         testLogging {
             events("passed", "skipped", "failed")
@@ -84,35 +95,41 @@ tasks {
 
     shadowJar {
         val shadebase = "de.eldoria.schematicbrush.libs."
-        relocate("de.eldoria.messageblocker", shadebase + "messageblocker")
         relocate("com.fasterxml", shadebase + "fasterxml")
+        relocate("tools.jackson", shadebase + "jackson")
+        relocate("dev.chojo.ocular", shadebase + "ocular")
         relocate("de.eldoria.jacksonbukkit", shadebase + "jacksonbukkit")
         relocate("de.eldoria.eldoutilities", shadebase + "utilities")
         archiveBaseName.set("SchematicTools")
         mergeServiceFiles()
     }
 
+    build {
+        dependsOn(shadowJar)
+    }
+
     runServer {
-        minecraftVersion("1.21.1")
+        minecraftVersion("26.3")
+        javaLauncher = project.javaToolchains.launcherFor {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
         downloadPlugins {
-            url("https://ci.athion.net/job/FastAsyncWorldEdit/1129/artifact/artifacts/FastAsyncWorldEdit-Bukkit-2.13.1-SNAPSHOT-1129.jar")
-            url("https://download.luckperms.net/1594/bukkit/loader/LuckPerms-Bukkit-5.5.9.jar")
+            modrinth("fastasyncworldedit", "2.16.1")
+            modrinth("luckperms", "v5.5.71-bukkit")
+            // TODO: download Schematic Brush Reborn 3 once it has a stable download URL
         }
 
         jvmArgs("-Dcom.mojang.eula.agree=true")
-    }
-
-    build {
-        dependsOn(shadowJar)
     }
 }
 
 bukkit {
     name = "SchematicTools"
+    version = project.version.toString()
     main = "de.eldoria.schematictools.SchematicTools"
-    apiVersion = "1.16"
+    apiVersion = "1.21.11"
     authors = listOf("RainbowDashLabs")
-    depend = listOf("SchematicBrushReborn")
+    depend = listOf("SchematicBrushReborn", "FastAsyncWorldEdit")
 
     commands {
         register("schematictools") {

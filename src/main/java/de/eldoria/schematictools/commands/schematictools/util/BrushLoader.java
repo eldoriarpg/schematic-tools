@@ -21,7 +21,6 @@ public class BrushLoader {
     private static final Pattern UUID_PATTERN = Pattern.compile("[[:xdigit:]]{8}(-[[:xdigit:]]{4}){3}-[[:xdigit:]]{12}");
 
     public static BrushContainer getContainer(Player player, Storage storage, String name, Arguments args) {
-        // Check for container by name
         var brushContainer = storage.brushes().containerByName(player, name);
 
         UUID owner = null;

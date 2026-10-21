@@ -5,20 +5,20 @@
  */
 package de.eldoria.schematictools.configuration;
 
-import de.eldoria.eldoutilities.config.ConfigKey;
 import de.eldoria.eldoutilities.config.JacksonConfig;
 import de.eldoria.schematictools.configuration.elements.ToolRemoval;
 import de.eldoria.schematictools.configuration.elements.Tools;
+import dev.chojo.ocular.key.Key;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
 public class JacksonConfiguration extends JacksonConfig<ConfigFile> implements Configuration {
-    public static final ConfigKey<Tools> TOOLS = ConfigKey.of("Tools", Path.of("tools.yml"), Tools.class, Tools::new);
+    public static final Key<Tools> TOOLS = Key.builder(Path.of("tools.yml"), Tools::new).name("Tools").build();
 
     public JacksonConfiguration(@NotNull Plugin plugin) {
-        super(plugin, ConfigKey.defaultConfig(ConfigFile.class, ConfigFile::new));
+        super(plugin, Key.builder(Path.of("config.yml"), ConfigFile::new).build());
     }
 
     @Override
