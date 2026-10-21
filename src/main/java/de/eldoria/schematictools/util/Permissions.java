@@ -22,6 +22,10 @@ public final class Permissions {
     public static final String LIST = perm(BASE, "list");
     public static final String MANAGE = perm(BASE, "modify");
     public static final String BIND = perm(BASE, "bind");
+    /**
+     * Permission to hear about new versions on join and to download them.
+     */
+    public static final String UPDATES = perm(BASE, "updates");
 
     private static String perm(String... perms) {
         return String.join(".", perms);

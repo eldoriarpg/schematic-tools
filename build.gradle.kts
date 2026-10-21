@@ -1,3 +1,5 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+
 plugins {
     java
     `maven-publish`
@@ -30,6 +32,10 @@ dependencies {
         exclude("net.kyori")
     }
 
+    testImplementation(libs.paper)
+    testImplementation(libs.bundles.utilities)
+    testImplementation(platform(libs.jackson.bom))
+    testImplementation(libs.bundles.jackson)
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.platform.launcher)
     testRuntimeOnly(libs.junit.jupiter.engine)
@@ -52,7 +58,9 @@ spotless {
 
 publishData {
     eldoNexus(dev = false)
-    buildData()
+    buildData {
+        put("lynaProduct", "6")
+    }
 }
 
 publishing {
@@ -136,6 +144,13 @@ bukkit {
             description = "Base command of schematic tools"
             permission = "schematictools.use"
             aliases = listOf("sbt")
+        }
+    }
+
+    permissions {
+        register("schematictools.updates") {
+            description = "Hear about new versions on join and download them"
+            default = BukkitPluginDescription.Permission.Default.OP
         }
     }
 }

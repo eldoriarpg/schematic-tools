@@ -7,6 +7,7 @@ package de.eldoria.schematictools.configuration;
 
 import de.eldoria.schematictools.configuration.elements.ToolRemoval;
 import de.eldoria.schematictools.configuration.elements.Tools;
+import de.eldoria.schematictools.configuration.elements.UpdateSettings;
 
 public interface Configuration {
 
@@ -15,4 +16,6 @@ public interface Configuration {
     Tools tools();
 
     ToolRemoval toolRemoval();
+
+    UpdateSettings updates();
 }

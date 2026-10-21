@@ -9,13 +9,12 @@ import de.eldoria.eldoutilities.config.template.PluginBaseConfiguration;
 import de.eldoria.eldoutilities.localization.Localizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
-import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateChecker;
-import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateData;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
 import de.eldoria.schematictools.commands.BaseCommand;
 import de.eldoria.schematictools.configuration.JacksonConfiguration;
 import de.eldoria.schematictools.listener.BrushBindListener;
 import de.eldoria.schematictools.listener.BrushPasteListener;
+import de.eldoria.schematictools.updates.Updates;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 
@@ -25,6 +24,7 @@ import java.util.logging.Level;
 
 public class SchematicTools extends EldoPlugin {
     private final JacksonConfiguration configuration = new JacksonConfiguration(this);
+    private final Updates updates = new Updates(this, configuration);
 
     @Override
     public Level getLogLevel() {
@@ -59,9 +59,7 @@ public class SchematicTools extends EldoPlugin {
             configuration.save();
         }
 
-        if (configuration.main().updateCheck()) {
-            LynaUpdateChecker.lyna(LynaUpdateData.builder(this, 6).build()).start();
-        }
+        updates.apply();
 
         registerCommand(new BaseCommand(this, sbr, configuration));
 
@@ -82,6 +80,7 @@ public class SchematicTools extends EldoPlugin {
 
     @Override
     public void onPluginDisable() throws Throwable {
+        updates.stop();
         configuration.save();
     }
 }
