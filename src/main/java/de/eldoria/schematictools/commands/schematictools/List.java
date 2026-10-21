@@ -43,7 +43,7 @@ public class List extends AdvancedCommand implements IPlayerTabExecutor {
         var tools = configuration.tools();
         var composer = MessageComposer.create();
         addPageHeader(composer, "words.tools");
-        addEntries(composer, tools.page(0, PAGE_SIZE), Tool::asListComponent);
+        addEntries(composer, tools.page(index, PAGE_SIZE), Tool::asListComponent);
         addPageFooter(composer, index, tools);
         send(composer, player);
     }
