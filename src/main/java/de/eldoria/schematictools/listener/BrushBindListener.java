@@ -5,15 +5,8 @@
  */
 package de.eldoria.schematictools.listener;
 
-import com.sk89q.worldedit.LocalSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.command.tool.BrushTool;
-import com.sk89q.worldedit.command.tool.InvalidToolBindException;
-import com.sk89q.worldedit.extension.platform.Actor;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
-import de.eldoria.schematicbrush.brush.SchematicBrush;
 import de.eldoria.schematicbrush.util.WorldEditBrush;
 import de.eldoria.schematictools.configuration.Configuration;
 import de.eldoria.schematictools.util.SchematicTool;
@@ -27,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class BrushBindListener implements Listener {
-    private static final WorldEdit WORLD_EDIT = WorldEdit.getInstance();
     private final Plugin plugin;
     private final SchematicBrushReborn sbr;
     private final Configuration configuration;
@@ -38,12 +30,6 @@ public class BrushBindListener implements Listener {
         this.sbr = sbr;
         this.configuration = configuration;
         this.messageSender = messageSender;
-    }
-
-    private static LocalSession getLocalSession(Player player) {
-        Actor actor = BukkitAdapter.adapt(player);
-
-        return WORLD_EDIT.getSessionManager().get(actor);
     }
 
     @EventHandler
@@ -70,14 +56,9 @@ public class BrushBindListener implements Listener {
         var toolId = SchematicTool.getToolId(stack);
         if (toolId.isEmpty()) return;
 
-        try {
-            if (getLocalSession(player).getTool(BukkitAdapter.adapt(stack).getType()) instanceof BrushTool tool
-                && tool.getBrush() instanceof SchematicBrush) {
-                getLocalSession(player).setTool(BukkitAdapter.adapt(stack).getType(), null);
-                messageSender.sendActionBar(player, "<gold>Deactivated schematic tool");
-            }
-        } catch (InvalidToolBindException e) {
-
+        if (WorldEditBrush.getSchematicBrush(player, stack.getType()).isEmpty()) return;
+        if (WorldEditBrush.removeBrush(player, stack)) {
+            messageSender.sendActionBar(player, "<gold>Deactivated schematic tool");
         }
     }
 
@@ -108,7 +89,6 @@ public class BrushBindListener implements Listener {
         }
 
         if (!player.hasPermission(tool.permission())) return;
-
 
         tool.getBrush(sbr.storageRegistry().activeStorage())
                 .thenAccept(brush -> {

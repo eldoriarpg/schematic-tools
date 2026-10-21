@@ -6,31 +6,27 @@
 package de.eldoria.schematictools;
 
 import de.eldoria.eldoutilities.config.template.PluginBaseConfiguration;
-import de.eldoria.eldoutilities.localization.ILocalizer;
 import de.eldoria.eldoutilities.localization.Localizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
 import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateChecker;
 import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateData;
-import de.eldoria.messageblocker.MessageBlockerAPI;
 import de.eldoria.schematicbrush.SchematicBrushReborn;
 import de.eldoria.schematictools.commands.BaseCommand;
-import de.eldoria.schematictools.configuration.Configuration;
 import de.eldoria.schematictools.configuration.JacksonConfiguration;
-import de.eldoria.schematictools.configuration.LegacyConfiguration;
-import de.eldoria.schematictools.configuration.elements.Tool;
-import de.eldoria.schematictools.configuration.elements.ToolRemoval;
-import de.eldoria.schematictools.configuration.elements.Tools;
 import de.eldoria.schematictools.listener.BrushBindListener;
 import de.eldoria.schematictools.listener.BrushPasteListener;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.logging.Level;
 
 public class SchematicTools extends EldoPlugin {
-    private JacksonConfiguration configuration = new JacksonConfiguration(this);
+    private final JacksonConfiguration configuration = new JacksonConfiguration(this);
 
+    @Override
     public Level getLogLevel() {
         return configuration.secondary(PluginBaseConfiguration.KEY).logLevel();
     }
@@ -38,17 +34,26 @@ public class SchematicTools extends EldoPlugin {
     @Override
     public void onPluginEnable() throws Throwable {
         var sbr = SchematicBrushReborn.instance();
-        var messageSender = MessageSender.builder(this).prefix("<gold>[ST]").register();
-        var messageBlocker = MessageBlockerAPI.builder(this).addWhitelisted("[ST]").build();
-        Localizer.builder(this, "en_US")
+        var localizer = Localizer.builder(this, "en_US")
                 .setIncludedLocales("en_US")
                 .build();
+        var messageSender = MessageSender.builder(this)
+                .prefix("<gold>[ST]")
+                .addTag(tags -> tags
+                        .tag("heading", Tag.styling(NamedTextColor.GOLD))
+                        .tag("name", Tag.styling(NamedTextColor.DARK_AQUA))
+                        .tag("value", Tag.styling(NamedTextColor.DARK_GREEN))
+                        .tag("change", Tag.styling(NamedTextColor.YELLOW))
+                        .tag("neutral", Tag.styling(NamedTextColor.AQUA))
+                        .tag("inactive", Tag.styling(NamedTextColor.GRAY)))
+                .localizer(localizer)
+                .register();
+
         PluginBaseConfiguration base = configuration.secondary(PluginBaseConfiguration.KEY);
         if (base.version() == 0) {
-            var legacyConfiguration = new LegacyConfiguration(this);
-            getLogger().log(Level.INFO, "Migrating configuration to jackson.");
-            configuration.main().toolRemoval(legacyConfiguration.toolRemoval());
-            configuration.replace(JacksonConfiguration.TOOLS, legacyConfiguration.tools());
+            if (isPreJacksonInstall()) {
+                throw new IllegalStateException("The configuration was written by a version older than 1.1.0. Update to 1.1.2 first, start the server once, then update to this version.");
+            }
             base.version(1);
             base.lastInstalledVersion(this);
             configuration.save();
@@ -58,15 +63,21 @@ public class SchematicTools extends EldoPlugin {
             LynaUpdateChecker.lyna(LynaUpdateData.builder(this, 6).build()).start();
         }
 
-        registerCommand(new BaseCommand(this, sbr, configuration, messageBlocker));
+        registerCommand(new BaseCommand(this, sbr, configuration));
 
         registerListener(new BrushBindListener(this, sbr, configuration, messageSender),
                 new BrushPasteListener(this, configuration, messageSender));
     }
 
-    @Override
-    public List<Class<? extends ConfigurationSerializable>> getConfigSerialization() {
-        return List.of(Tools.class, Tool.class, ToolRemoval.class);
+    /**
+     * Checks whether the data folder still holds a configuration in the Bukkit serialization format used before 1.1.0.
+     *
+     * @return true if the main configuration contains Bukkit serialization markers
+     * @throws IOException if the configuration file can not be read
+     */
+    private boolean isPreJacksonInstall() throws IOException {
+        var config = getDataFolder().toPath().resolve("config.yml");
+        return Files.exists(config) && Files.readString(config).contains("==:");
     }
 
     @Override

@@ -7,6 +7,7 @@ package de.eldoria.schematictools.util;
 
 import de.eldoria.eldoutilities.pdc.DataContainerUtil;
 import de.eldoria.schematictools.configuration.elements.Tool;
+import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public final class SchematicTool {
@@ -78,8 +80,9 @@ public final class SchematicTool {
         if (!tool.hasUsage()) {
             DataContainerUtil.get(stack, LORE_INDEX, PersistentDataType.INTEGER).ifPresent(index -> {
                 var meta = stack.getItemMeta();
-                var lore = meta.getLore();
-                lore.remove(index.intValue());
+                var lore = new ArrayList<>(Objects.requireNonNullElse(meta.lore(), List.of()));
+                if (index < lore.size()) lore.remove(index.intValue());
+                meta.lore(lore);
                 DataContainerUtil.remove(meta, LORE_INDEX, PersistentDataType.INTEGER);
                 stack.setItemMeta(meta);
             });
@@ -88,19 +91,15 @@ public final class SchematicTool {
 
         var loreIndex = DataContainerUtil.get(stack, LORE_INDEX, PersistentDataType.INTEGER);
         var meta = stack.getItemMeta();
-        List<String> lore;
-        if (meta.hasLore()) {
-            lore = meta.getLore();
-        } else {
-            lore = new ArrayList<>();
-        }
+        List<Component> lore = new ArrayList<>(Objects.requireNonNullElse(meta.lore(), List.of()));
+        var usage = Component.text("Used: %s/%s".formatted(getUsed(stack), tool.usages()));
 
-        loreIndex.ifPresentOrElse(index -> lore.set(index, String.format("Used: %s/%s", getUsed(stack), tool.usages())),
+        loreIndex.ifPresentOrElse(index -> lore.set(index, usage),
                 () -> {
                     DataContainerUtil.putValue(meta, LORE_INDEX, PersistentDataType.INTEGER, lore.size());
-                    lore.add(String.format("Used: %s/%s", getUsed(stack), tool.usages()));
+                    lore.add(usage);
                 });
-        meta.setLore(lore);
+        meta.lore(lore);
         stack.setItemMeta(meta);
     }
 

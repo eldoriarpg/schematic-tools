@@ -12,8 +12,6 @@ import de.eldoria.eldoutilities.commands.command.util.CommandAssertions;
 import de.eldoria.eldoutilities.commands.exceptions.CommandException;
 import de.eldoria.eldoutilities.commands.executor.IPlayerTabExecutor;
 import de.eldoria.eldoutilities.localization.MessageComposer;
-import de.eldoria.messageblocker.blocker.MessageBlocker;
-import de.eldoria.schematicbrush.util.Colors;
 import de.eldoria.schematictools.configuration.Configuration;
 import de.eldoria.schematictools.configuration.elements.Tool;
 import de.eldoria.schematictools.util.Permissions;
@@ -27,15 +25,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class Info extends AdvancedCommand implements IPlayerTabExecutor {
-    private final MessageBlocker messageBlocker;
     private final Configuration configuration;
 
-    public Info(Plugin plugin, MessageBlocker messageBlocker, Configuration configuration) {
+    public Info(Plugin plugin, Configuration configuration) {
         super(plugin, CommandMeta.builder("info")
                 .addUnlocalizedArgument("name", false)
                 .withPermission(Permissions.Info.CURRENT, Permissions.Info.ALL)
                 .build());
-        this.messageBlocker = messageBlocker;
         this.configuration = configuration;
     }
 
@@ -60,8 +56,6 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
     }
 
     public void showTool(Player player, Tool tool) {
-        messageBlocker.blockPlayer(player);
-
         var composer = MessageComposer.create();
         if (player.hasPermission(Permissions.MANAGE)) {
             composer.text(tool.asModifyComponent());
@@ -69,13 +63,11 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
             composer.text(tool.asInfoComponent());
         }
         if (player.hasPermission(Permissions.Info.ALL)) {
-            composer.newLine().text("<click:run_command:'/schematictools list'><%s>[", Colors.CHANGE)
+            composer.newLine().text("<click:run_command:'/schematictools list'><change>[")
                     .localeCode("words.back")
                     .text("]</click>");
         }
 
-        messageBlocker.ifEnabled(() -> composer.newLine().text("<click:run_command:'/schematictools chatblock false'><%s>[x]</click>", Colors.REMOVE));
-        messageBlocker.announce(player, "[x]");
         messageSender().sendMessage(player, composer.build());
     }
 

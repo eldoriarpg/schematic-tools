@@ -30,7 +30,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-// Create a new schematic tool configuration
+/**
+ * Creates a new schematic tool configuration.
+ */
 public class Create extends AdvancedCommand implements IPlayerTabExecutor {
     private final SchematicBrushReborn sbr;
     private final Configuration configuration;

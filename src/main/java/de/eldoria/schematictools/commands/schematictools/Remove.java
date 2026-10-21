@@ -21,7 +21,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-// Remove an schematic tool.
+/**
+ * Removes a schematic tool.
+ */
 public class Remove extends AdvancedCommand implements IPlayerTabExecutor {
     private final Configuration configuration;
 
