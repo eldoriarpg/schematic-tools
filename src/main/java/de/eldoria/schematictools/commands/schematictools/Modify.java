@@ -83,10 +83,12 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
                     CommandAssertions.min(usages, 1);
                 }
                 tool.usages(usages);
+                configuration.save();
                 info.showTool(player, tool);
             }
             case "permission" -> {
                 tool.permission(value.asString());
+                configuration.save();
                 info.showTool(player, tool);
             }
             default -> throw CommandException.message("error.invalidfieldname");

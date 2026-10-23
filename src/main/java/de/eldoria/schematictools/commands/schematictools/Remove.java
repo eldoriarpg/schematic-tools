@@ -42,6 +42,7 @@ public class Remove extends AdvancedCommand implements IPlayerTabExecutor {
         CommandAssertions.isTrue(tool.isPresent(), "error.toolnotfound");
 
         configuration.tools().remove(tool.get());
+        configuration.save();
         messageSender().sendMessage(player, "commands.remove.removed");
     }
 

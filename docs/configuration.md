@@ -13,7 +13,7 @@ Each file is created with default values the first time the add-on needs it.
 | `tools.yml` | All tools you created |
 | `base_configuration.yml` | Log level and version bookkeeping |
 
-The add-on reads its files on startup and writes them again when it shuts down.
+The add-on reads its files on startup. It writes them whenever a command changes a tool, and again when it shuts down.
 To edit a file by hand, stop the server first, then start it again. Changes made while the server runs are overwritten.
 
 ## config.yml
