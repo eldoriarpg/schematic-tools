@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class BrushLoader {
     private static final String GLOBAL_PREFIX = "g:";
-    private static final Pattern UUID_PATTERN = Pattern.compile("[[:xdigit:]]{8}(-[[:xdigit:]]{4}){3}-[[:xdigit:]]{12}");
+    private static final Pattern UUID_PATTERN = Pattern.compile("\\p{XDigit}{8}(-\\p{XDigit}{4}){3}-\\p{XDigit}{12}");
 
     public static BrushContainer getContainer(Player player, Storage storage, String name, Arguments args) {
         var brushContainer = storage.brushes().containerByName(player, name);
@@ -27,7 +27,7 @@ public class BrushLoader {
         UUID owner = null;
         if (!brushContainer.isGlobalContainer() && args.flags().hasValue("o")) {
             var ownerArg = args.flags().get("o");
-            var optOwner = playerByName(ownerArg.asString()).map(OfflinePlayer::getUniqueId).or(() -> getAsUUID(ownerArg.asString()));
+            var optOwner = playerByName(ownerArg.asString()).map(OfflinePlayer::getUniqueId).or(() -> parseUuid(ownerArg.asString()));
             CommandAssertions.isTrue(optOwner.isPresent(), "error.noowner");
             owner = optOwner.get();
             brushContainer = storage.brushes().playerContainer(owner);
@@ -47,7 +47,13 @@ public class BrushLoader {
         return name.startsWith(GLOBAL_PREFIX) ? name.substring(GLOBAL_PREFIX.length()) : name;
     }
 
-    private static Optional<UUID> getAsUUID(String uuid) {
+    /**
+     * Reads a player UUID in its canonical form, as Minecraft shows it.
+     *
+     * @param uuid the text to read
+     * @return the UUID, or empty if the text is not a canonical UUID
+     */
+    static Optional<UUID> parseUuid(String uuid) {
         if (UUID_PATTERN.matcher(uuid).matches()) {
             return Optional.of(UUID.fromString(uuid));
         }

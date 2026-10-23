@@ -35,7 +35,7 @@ The base command itself needs `schematictools.use`. Give it to everyone who shou
 | `brush` | yes | Name of a saved brush of yours, or of the owner given with `-o`. Use `g:<name>` for a global brush. |
 | `-p <permission>` | no | Permission needed to use the tool. Default: `schematictools.use`. |
 | `-u <usages>` | no | How often each item can paste. 1 or more. Default: no limit. |
-| `-o <owner>` | no | Name of the player whose saved brush to use. The player must have played on the server before. |
+| `-o <owner>` | no | Name or UUID of the player whose saved brush to use. A name only works for players who have played on the server before. |
 
 ### bind
 

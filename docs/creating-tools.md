@@ -24,7 +24,7 @@ You can save it as one of your own brushes or as a global brush.
 - `brush`: the name of your saved brush. For a global brush, put `g:` in front of the name, for example `g:forest`.
 - `-p <permission>`: the permission a player needs to use the tool. Without it, the tool uses `schematictools.use`.
 - `-u <usages>`: how often each item can paste. Must be 1 or more. Without it, the items can paste without limit.
-- `-o <owner>`: take the brush from another player's saved brushes. Enter the name of a player who has played on the server before.
+- `-o <owner>`: take the brush from another player's saved brushes. Enter the name of a player who has played on the server before, or the player's UUID.
 
 Examples:
 
