@@ -13,6 +13,7 @@ import de.eldoria.eldoutilities.commands.exceptions.CommandException;
 import de.eldoria.eldoutilities.commands.executor.IPlayerTabExecutor;
 import de.eldoria.schematicbrush.util.WorldEditBrush;
 import de.eldoria.schematictools.configuration.Configuration;
+import de.eldoria.schematictools.listener.BrushBindListener;
 import de.eldoria.schematictools.util.Permissions;
 import de.eldoria.schematictools.util.SchematicTool;
 import org.bukkit.Material;
@@ -29,13 +30,15 @@ import java.util.List;
  */
 public class Bind extends AdvancedCommand implements IPlayerTabExecutor {
     private final Configuration configuration;
+    private final BrushBindListener bindListener;
 
-    public Bind(Plugin plugin, Configuration configuration) {
+    public Bind(Plugin plugin, Configuration configuration, BrushBindListener bindListener) {
         super(plugin, CommandMeta.builder("bind")
                 .addUnlocalizedArgument("name", true)
                 .withPermission(Permissions.BIND)
                 .build());
         this.configuration = configuration;
+        this.bindListener = bindListener;
     }
 
     @Override
@@ -48,8 +51,8 @@ public class Bind extends AdvancedCommand implements IPlayerTabExecutor {
         var byName = configuration.tools().byName(args.get(0).asString());
         CommandAssertions.isTrue(byName.isPresent(), "error.toolnotfound");
 
-
         SchematicTool.initTool(hand, byName.get());
+        bindListener.bindTool(player, hand);
 
         messageSender().sendMessage(player, "commands.bind.bound");
     }

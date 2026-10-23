@@ -15,13 +15,14 @@ import de.eldoria.schematictools.commands.schematictools.List;
 import de.eldoria.schematictools.commands.schematictools.Modify;
 import de.eldoria.schematictools.commands.schematictools.Remove;
 import de.eldoria.schematictools.configuration.Configuration;
+import de.eldoria.schematictools.listener.BrushBindListener;
 import org.bukkit.plugin.Plugin;
 
 public class BaseCommand extends AdvancedCommand {
-    public BaseCommand(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration) {
+    public BaseCommand(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration, BrushBindListener bindListener) {
         super(plugin, CommandMeta.builder("schematictools")
                 .buildSubCommands((cmds, builder) -> {
-                    cmds.add(new Bind(plugin, configuration));
+                    cmds.add(new Bind(plugin, configuration, bindListener));
                     cmds.add(new Create(plugin, sbr, configuration));
                     cmds.add(new List(plugin, configuration));
                     var info = new Info(plugin, configuration);

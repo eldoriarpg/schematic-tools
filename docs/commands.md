@@ -32,10 +32,10 @@ The base command itself needs `schematictools.use`. Give it to everyone who shou
 | Argument | Required | What it means |
 |---|---|---|
 | `name` | yes | Name of the new tool. Must not be taken yet. Use quotes for names with spaces. |
-| `brush` | yes | Name of a saved brush of yours, or of the owner given with `-o`. |
+| `brush` | yes | Name of a saved brush of yours, or of the owner given with `-o`. Use `g:<name>` for a global brush. |
 | `-p <permission>` | no | Permission needed to use the tool. Default: `schematictools.use`. |
 | `-u <usages>` | no | How often each item can paste. 1 or more. Default: no limit. |
-| `-o <owner>` | no | Name of the player whose saved brush to use. The player must have played on the server before. |
+| `-o <owner>` | no | Name or UUID of the player whose saved brush to use. A name only works for players who have played on the server before. |
 
 ### bind
 
@@ -65,7 +65,7 @@ With `schematictools.info.all` it shows a `[Back]` button to the list.
 ```
 
 Shows all tools. Hover over a name to see its details, or click `[Info]`.
-Use the arrows at the bottom to turn pages. If you type a page number, the first page is `0`.
+Use the arrows at the bottom to turn pages. If you type a page number, the first page is `0`. A number past the last page shows the last page.
 
 ### modify
 
@@ -76,7 +76,7 @@ Use the arrows at the bottom to turn pages. If you type a page number, the first
 | Field | Value |
 |---|---|
 | `name` | New name for the tool. Must not be taken yet. |
-| `brushName` | Name of another saved brush. Add `-o <owner>` to use a brush of another player. |
+| `brushName` | Name of another saved brush. Use `g:<name>` for a global brush, or add `-o <owner>` to use a brush of another player. |
 | `usages` | 1 or more, or `-1` for no limit. |
 | `permission` | Permission needed to use the tool. |
 

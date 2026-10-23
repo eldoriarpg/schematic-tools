@@ -16,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -47,6 +48,12 @@ public class BrushBindListener implements Listener {
         bindTool(player, newItem);
     }
 
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        var player = event.getPlayer();
+        bindTool(player, player.getInventory().getItemInMainHand());
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onItemDrop(PlayerDropItemEvent event) {
         unbindTool(event.getPlayer(), event.getItemDrop().getItemStack());
@@ -70,7 +77,7 @@ public class BrushBindListener implements Listener {
         var optTool = configuration.tools().byId(toolMeta.id());
 
         if (optTool.isEmpty()) {
-            plugin.getLogger().warning("Brush Tool with ID " + toolMeta + " of player" + player.getName() + "does not exist anymore.");
+            plugin.getLogger().warning("Brush Tool with ID " + toolMeta.id() + " of player " + player.getName() + " does not exist anymore.");
             if (configuration.toolRemoval().isRemoveInvalidTools()) {
                 messageSender.sendActionBar(player, "<dark_red>Your tool broke.");
                 stack.setAmount(0);
@@ -93,7 +100,7 @@ public class BrushBindListener implements Listener {
         tool.getBrush(sbr.storageRegistry().activeStorage())
                 .thenAccept(brush -> {
                     if (brush.isEmpty()) {
-                        plugin.getLogger().warning("Tool " + tool + " of player " + player.getName() + "has an invalid brush.");
+                        plugin.getLogger().warning("Tool " + tool + " of player " + player.getName() + " has an invalid brush.");
                         if (configuration.toolRemoval().isRemoveInvalidBrushes()) {
                             messageSender.sendActionBar(player, "<dark_red>Your tool broke.");
                             stack.setAmount(0);

@@ -12,12 +12,7 @@ All commands start with `/schematictools`, or the short form `/sbt`.
 Build your brush with Schematic Brush Reborn and save it under a name.
 See [Presets](/schematic-brush-reborn/presets) for saving brushes and the [command reference](/schematic-brush-reborn/reference/commands) for the commands.
 
-Save it as one of your own brushes, not as a global brush.
-
-:::warning
-Global brushes, the ones you address with the `g:` prefix, do not work with tools right now.
-The tool is created, but it never finds its brush.
-:::
+You can save it as one of your own brushes or as a global brush.
 
 ## 2. Create the tool
 
@@ -26,23 +21,22 @@ The tool is created, but it never finds its brush.
 ```
 
 - `name`: the name of the new tool. It must not be taken. Put it in quotes if it has spaces.
-- `brush`: the name of your saved brush.
+- `brush`: the name of your saved brush. For a global brush, put `g:` in front of the name, for example `g:forest`.
 - `-p <permission>`: the permission a player needs to use the tool. Without it, the tool uses `schematictools.use`.
 - `-u <usages>`: how often each item can paste. Must be 1 or more. Without it, the items can paste without limit.
-- `-o <owner>`: take the brush from another player's saved brushes. Enter the name of a player who has played on the server before.
+- `-o <owner>`: take the brush from another player's saved brushes. Enter the name of a player who has played on the server before, or the player's UUID.
 
 Examples:
 
 ```text
 /sbt create trees forest
+/sbt create global-trees g:forest
 /sbt create "small house" house -u 5
 /sbt create vip-trees forest -p myserver.tools.trees
 /sbt create shop-fountain fountain -o Alex -u 10
 ```
 
-:::note
-The command does not check that the brush exists. Check the spelling, or use tab completion for the brush name.
-:::
+If the brush does not exist, the tool is not created and you see "No brush found with this name."
 
 You need the permission `schematictools.modify`.
 
@@ -75,12 +69,9 @@ Give the item to a player in any way you like: a kit, a shop, a crate or just `/
 ## Using a tool
 
 A player selects the item in the hotbar. The action bar shows "Activated schematic tool".
+The tool also switches on right after `/sbt bind`, and when a player joins with the item already selected.
 Now the item works like a schematic brush: right-clicking pastes a schematic.
 When the player selects another slot or drops the item, the brush is switched off again.
-
-:::tip
-After you bind a tool, switch to another hotbar slot and back. The tool only switches on when the item is selected.
-:::
 
 The tool stays off when:
 
@@ -114,7 +105,7 @@ You can also type the command yourself:
 | Field | Value |
 |---|---|
 | `name` | A new name that is not taken yet. |
-| `brushName` | Another saved brush. Add `-o <owner>` to take it from another player. |
+| `brushName` | Another saved brush. Use `g:<name>` for a global brush, or add `-o <owner>` to take it from another player. |
 | `usages` | A number of 1 or more, or `-1` for no limit. |
 | `permission` | The permission a player needs to use the tool. |
 

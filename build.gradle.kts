@@ -34,6 +34,7 @@ dependencies {
     }
 
     testImplementation(libs.paper)
+    testImplementation(libs.schematicbrushreborn.api)
     testImplementation(libs.bundles.utilities)
     testImplementation(platform(libs.jackson.bom))
     testImplementation(libs.bundles.jackson)
