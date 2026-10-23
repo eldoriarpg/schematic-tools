@@ -39,8 +39,8 @@ public class List extends AdvancedCommand implements IPlayerTabExecutor {
 
     @Override
     public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
-        var index = args.asInt(0, 0);
         var tools = configuration.tools();
+        var index = Math.clamp(args.asInt(0, 0), 0, Math.max(0, tools.pages(PAGE_SIZE) - 1));
         var composer = MessageComposer.create();
         addPageHeader(composer, "words.tools");
         addEntries(composer, tools.page(index, PAGE_SIZE), Tool::asListComponent);

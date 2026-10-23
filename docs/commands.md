@@ -65,7 +65,7 @@ With `schematictools.info.all` it shows a `[Back]` button to the list.
 ```
 
 Shows all tools. Hover over a name to see its details, or click `[Info]`.
-Use the arrows at the bottom to turn pages. If you type a page number, the first page is `0`.
+Use the arrows at the bottom to turn pages. If you type a page number, the first page is `0`. A number past the last page shows the last page.
 
 ### modify
 

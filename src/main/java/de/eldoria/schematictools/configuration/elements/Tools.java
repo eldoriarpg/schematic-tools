@@ -57,8 +57,16 @@ public class Tools {
                 .toList();
     }
 
+    /**
+     * Returns one page of tools. A page outside the list is empty.
+     *
+     * @param page     the page index, starting at 0
+     * @param pageSize the number of tools on a page
+     * @return the tools on that page
+     */
     public List<Tool> page(int page, int pageSize) {
-        return tools.subList(page * pageSize, Math.min(tools.size(), page * pageSize + pageSize));
+        var from = Math.min(tools.size(), Math.max(0, page) * pageSize);
+        return tools.subList(from, Math.min(tools.size(), from + pageSize));
     }
 
     public int pages(int pageSize) {
