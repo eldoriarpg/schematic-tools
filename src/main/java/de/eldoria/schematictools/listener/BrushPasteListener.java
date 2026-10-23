@@ -44,8 +44,11 @@ public class BrushPasteListener implements Listener {
             messageSender.sendErrorActionBar(player, "The usages of your brush tool are exhausted.");
             toolMeta.updateUsage(tool);
             if (configuration.toolRemoval().isRemoveUsed()) {
-                plugin.getServer().getScheduler().runTask(plugin,
-                        () -> SchematicTool.getPlayerItem(player).setAmount(0));
+                plugin.getServer()
+                        .getScheduler()
+                        .runTask(
+                                plugin,
+                                () -> SchematicTool.getPlayerItem(player).setAmount(0));
             }
         }
     }
@@ -67,8 +70,11 @@ public class BrushPasteListener implements Listener {
         if (tool.hasUsage() && toolMeta.usages() >= tool.usages()) {
             messageSender.sendErrorActionBar(player, "The usages of your brush tool are exhausted.");
             if (configuration.toolRemoval().isRemoveUsed()) {
-                plugin.getServer().getScheduler().runTask(plugin,
-                        () -> SchematicTool.getPlayerItem(player).setAmount(0));
+                plugin.getServer()
+                        .getScheduler()
+                        .runTask(
+                                plugin,
+                                () -> SchematicTool.getPlayerItem(player).setAmount(0));
             }
         }
     }

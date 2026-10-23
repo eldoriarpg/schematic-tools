@@ -37,12 +37,13 @@ public class Tool {
      * The name of the underlying brush
      */
     private String brushName;
+
     @Nullable
     private String permission;
+
     private int usages;
 
-    public Tool() {
-    }
+    public Tool() {}
 
     public Tool(UUID owner, String name, String brushName, int id, String permission, int usages) {
         this.owner = owner;

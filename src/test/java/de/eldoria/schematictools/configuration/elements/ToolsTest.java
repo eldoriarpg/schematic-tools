@@ -37,6 +37,8 @@ class ToolsTest {
 
     @Test
     void negativePageIsTheFirstPage() {
-        assertEquals(List.of("tool0", "tool1"), withTools(5).page(-1, 2).stream().map(Tool::name).toList());
+        assertEquals(
+                List.of("tool0", "tool1"),
+                withTools(5).page(-1, 2).stream().map(Tool::name).toList());
     }
 }

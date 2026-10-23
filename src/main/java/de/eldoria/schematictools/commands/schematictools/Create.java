@@ -38,21 +38,23 @@ public class Create extends AdvancedCommand implements IPlayerTabExecutor {
     private final Configuration configuration;
 
     public Create(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration) {
-        super(plugin, CommandMeta.builder("create")
-                                 .addUnlocalizedArgument("name", true)
-                                 .addUnlocalizedArgument("brush", true)
-                                 .addUnlocalizedArgument("-p permission.node", false)
-                                 .addUnlocalizedArgument("-u usages", false)
-                                 .addUnlocalizedArgument("-o owner", false)
-                                 .withPermission(Permissions.MANAGE)
-                                 .build());
+        super(
+                plugin,
+                CommandMeta.builder("create")
+                        .addUnlocalizedArgument("name", true)
+                        .addUnlocalizedArgument("brush", true)
+                        .addUnlocalizedArgument("-p permission.node", false)
+                        .addUnlocalizedArgument("-u usages", false)
+                        .addUnlocalizedArgument("-o owner", false)
+                        .withPermission(Permissions.MANAGE)
+                        .build());
         this.sbr = sbr;
         this.configuration = configuration;
     }
 
-
     @Override
-    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         args.parseQuoted();
 
         var toolName = args.get(0).asString();
@@ -64,23 +66,26 @@ public class Create extends AdvancedCommand implements IPlayerTabExecutor {
 
         var storedName = BrushLoader.storedName(brushName);
 
-        brushContainer.get(storedName).thenAccept(brush -> {
-            CommandAssertions.isTrue(brush.isPresent(), "error.nobrushfound");
-            SchematicToolBuilder builder;
-            builder = configuration.tools().create(brushContainer.owner(), toolName, storedName);
+        brushContainer
+                .get(storedName)
+                .thenAccept(brush -> {
+                    CommandAssertions.isTrue(brush.isPresent(), "error.nobrushfound");
+                    SchematicToolBuilder builder;
+                    builder = configuration.tools().create(brushContainer.owner(), toolName, storedName);
 
-            args.flags().getIfPresent("p").ifPresent(input -> builder.withPermission(input.asString()));
+                    args.flags().getIfPresent("p").ifPresent(input -> builder.withPermission(input.asString()));
 
-            if (args.flags().hasValue("u")) {
-                var usages = args.flags().get("u").asInt();
-                CommandAssertions.min(usages, 1);
-                builder.withUsages(usages);
-            }
+                    if (args.flags().hasValue("u")) {
+                        var usages = args.flags().get("u").asInt();
+                        CommandAssertions.min(usages, 1);
+                        builder.withUsages(usages);
+                    }
 
-            configuration.tools().add(builder.build());
-            messageSender().sendMessage(player, "commands.create.created");
-            configuration.save();
-        }).whenComplete(Futures.whenComplete(Consumers.emptyConsumer(), err -> handleCommandError(player, err)));
+                    configuration.tools().add(builder.build());
+                    messageSender().sendMessage(player, "commands.create.created");
+                    configuration.save();
+                })
+                .whenComplete(Futures.whenComplete(Consumers.emptyConsumer(), err -> handleCommandError(player, err)));
     }
 
     private Optional<OfflinePlayer> playerByName(String name) {
@@ -93,18 +98,21 @@ public class Create extends AdvancedCommand implements IPlayerTabExecutor {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         args.parseQuoted();
         if ("p".equalsIgnoreCase(args.flags().lastFlag())) {
             return Collections.singletonList("permission");
         }
 
         if ("u".equalsIgnoreCase(args.flags().lastFlag())) {
-            return Completion.completeMinInt(args.flags().getIfPresent("u").map(Input::asString).orElse(""), 1);
+            return Completion.completeMinInt(
+                    args.flags().getIfPresent("u").map(Input::asString).orElse(""), 1);
         }
 
         if ("o".equalsIgnoreCase(args.flags().lastFlag())) {
-            return Completion.completePlayers(args.flags().getIfPresent("o").map(Input::asString).orElse(""));
+            return Completion.completePlayers(
+                    args.flags().getIfPresent("o").map(Input::asString).orElse(""));
         }
 
         if (args.sizeIs(1)) {
@@ -114,7 +122,10 @@ public class Create extends AdvancedCommand implements IPlayerTabExecutor {
         }
 
         if (args.sizeIs(2)) {
-            return sbr.storageRegistry().activeStorage().brushes().complete(player, args.get(1).asString());
+            return sbr.storageRegistry()
+                    .activeStorage()
+                    .brushes()
+                    .complete(player, args.get(1).asString());
         }
 
         return Collections.emptyList();

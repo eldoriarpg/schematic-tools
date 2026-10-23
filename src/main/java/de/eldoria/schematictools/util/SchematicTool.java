@@ -54,7 +54,8 @@ public final class SchematicTool {
     }
 
     public static void makeUnique(ItemStack stack) {
-        DataContainerUtil.putValue(stack, UNIQUE, PersistentDataType.STRING, String.valueOf(System.currentTimeMillis()));
+        DataContainerUtil.putValue(
+                stack, UNIQUE, PersistentDataType.STRING, String.valueOf(System.currentTimeMillis()));
     }
 
     public static void setToolId(ItemStack stack, int id) {
@@ -94,11 +95,10 @@ public final class SchematicTool {
         List<Component> lore = new ArrayList<>(Objects.requireNonNullElse(meta.lore(), List.of()));
         var usage = Component.text("Used: %s/%s".formatted(getUsed(stack), tool.usages()));
 
-        loreIndex.ifPresentOrElse(index -> lore.set(index, usage),
-                () -> {
-                    DataContainerUtil.putValue(meta, LORE_INDEX, PersistentDataType.INTEGER, lore.size());
-                    lore.add(usage);
-                });
+        loreIndex.ifPresentOrElse(index -> lore.set(index, usage), () -> {
+            DataContainerUtil.putValue(meta, LORE_INDEX, PersistentDataType.INTEGER, lore.size());
+            lore.add(usage);
+        });
         meta.lore(lore);
         stack.setItemMeta(meta);
     }

@@ -34,13 +34,11 @@ public class SchematicTools extends EldoPlugin {
     @Override
     public void onPluginEnable() throws Throwable {
         var sbr = SchematicBrushReborn.instance();
-        var localizer = Localizer.builder(this, "en_US")
-                .setIncludedLocales("en_US")
-                .build();
+        var localizer =
+                Localizer.builder(this, "en_US").setIncludedLocales("en_US").build();
         var messageSender = MessageSender.builder(this)
                 .prefix("<gold>[ST]")
-                .addTag(tags -> tags
-                        .tag("heading", Tag.styling(NamedTextColor.GOLD))
+                .addTag(tags -> tags.tag("heading", Tag.styling(NamedTextColor.GOLD))
                         .tag("name", Tag.styling(NamedTextColor.DARK_AQUA))
                         .tag("value", Tag.styling(NamedTextColor.DARK_GREEN))
                         .tag("change", Tag.styling(NamedTextColor.YELLOW))
@@ -52,7 +50,8 @@ public class SchematicTools extends EldoPlugin {
         PluginBaseConfiguration base = configuration.secondary(PluginBaseConfiguration.KEY);
         if (base.version() == 0) {
             if (isPreJacksonInstall()) {
-                throw new IllegalStateException("The configuration was written by a version older than 1.1.0. Update to 1.1.2 first, start the server once, then update to this version.");
+                throw new IllegalStateException(
+                        "The configuration was written by a version older than 1.1.0. Update to 1.1.2 first, start the server once, then update to this version.");
             }
             base.version(1);
             base.lastInstalledVersion(this);
