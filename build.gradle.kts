@@ -103,7 +103,6 @@ tasks {
     }
 
     test {
-        dependsOn(spotlessCheck)
         useJUnitPlatform()
         testLogging {
             events("passed", "skipped", "failed")
@@ -119,6 +118,8 @@ tasks {
         relocate("de.eldoria.eldoutilities", shadebase + "utilities")
         archiveBaseName.set("SchematicTools")
         mergeServiceFiles()
+        addMultiReleaseAttribute = false
+        exclude("META-INF/versions/**")
     }
 
     build {
@@ -166,6 +167,30 @@ bukkit {
     }
 
     permissions {
+        register("schematictools.use") {
+            description = "Run /sbt and use tools without a permission of their own"
+            default = BukkitPluginDescription.Permission.Default.OP
+        }
+        register("schematictools.bind") {
+            description = "Bind tools to items"
+            default = BukkitPluginDescription.Permission.Default.OP
+        }
+        register("schematictools.list") {
+            description = "List all tools"
+            default = BukkitPluginDescription.Permission.Default.OP
+        }
+        register("schematictools.info.current") {
+            description = "See the tool in your hand"
+            default = BukkitPluginDescription.Permission.Default.OP
+        }
+        register("schematictools.info.all") {
+            description = "See any tool by name"
+            default = BukkitPluginDescription.Permission.Default.OP
+        }
+        register("schematictools.modify") {
+            description = "Create, change and remove tools"
+            default = BukkitPluginDescription.Permission.Default.OP
+        }
         register("schematictools.updates") {
             description = "Hear about new versions on join and download them"
             default = BukkitPluginDescription.Permission.Default.OP
