@@ -119,6 +119,8 @@ tasks {
         relocate("de.eldoria.eldoutilities", shadebase + "utilities")
         archiveBaseName.set("SchematicTools")
         mergeServiceFiles()
+        addMultiReleaseAttribute = false
+        exclude("META-INF/versions/**")
     }
 
     build {
