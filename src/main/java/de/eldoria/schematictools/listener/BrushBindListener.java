@@ -16,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -45,6 +46,12 @@ public class BrushBindListener implements Listener {
 
         unbindTool(player, previousItem);
         bindTool(player, newItem);
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        var player = event.getPlayer();
+        bindTool(player, player.getInventory().getItemInMainHand());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

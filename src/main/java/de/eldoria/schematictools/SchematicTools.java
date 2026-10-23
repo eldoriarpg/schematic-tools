@@ -61,10 +61,11 @@ public class SchematicTools extends EldoPlugin {
 
         updates.apply();
 
-        registerCommand(new BaseCommand(this, sbr, configuration));
+        var bindListener = new BrushBindListener(this, sbr, configuration, messageSender);
 
-        registerListener(new BrushBindListener(this, sbr, configuration, messageSender),
-                new BrushPasteListener(this, configuration, messageSender));
+        registerCommand(new BaseCommand(this, sbr, configuration, bindListener));
+
+        registerListener(bindListener, new BrushPasteListener(this, configuration, messageSender));
     }
 
     /**

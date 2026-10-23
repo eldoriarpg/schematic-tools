@@ -69,12 +69,9 @@ Give the item to a player in any way you like: a kit, a shop, a crate or just `/
 ## Using a tool
 
 A player selects the item in the hotbar. The action bar shows "Activated schematic tool".
+The tool also switches on right after `/sbt bind`, and when a player joins with the item already selected.
 Now the item works like a schematic brush: right-clicking pastes a schematic.
 When the player selects another slot or drops the item, the brush is switched off again.
-
-:::tip
-After you bind a tool, switch to another hotbar slot and back. The tool only switches on when the item is selected.
-:::
 
 The tool stays off when:
 
