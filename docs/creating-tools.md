@@ -36,9 +36,7 @@ Examples:
 /sbt create shop-fountain fountain -o Alex -u 10
 ```
 
-:::note
-The command does not check that the brush exists. Check the spelling, or use tab completion for the brush name.
-:::
+If the brush does not exist, the tool is not created and you see "No brush found with this name."
 
 You need the permission `schematictools.modify`.
 

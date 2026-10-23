@@ -65,6 +65,7 @@ public class Create extends AdvancedCommand implements IPlayerTabExecutor {
         var storedName = BrushLoader.storedName(brushName);
 
         brushContainer.get(storedName).thenAccept(brush -> {
+            CommandAssertions.isTrue(brush.isPresent(), "error.nobrushfound");
             SchematicToolBuilder builder;
             builder = configuration.tools().create(brushContainer.owner(), toolName, storedName);
 
