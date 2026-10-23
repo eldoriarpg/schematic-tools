@@ -33,6 +33,8 @@ import java.util.Optional;
  * Modifies an existing schematic tool.
  */
 public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
+    private static final List<String> FIELDS = List.of("brushName", "name", "usages", "permission");
+    private static final String UNLIMITED = "-1";
     private final Configuration configuration;
     private final SchematicBrushReborn sbr;
     private final Info info;
@@ -107,42 +109,60 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+        args.parseQuoted();
+
+        if ("o".equalsIgnoreCase(args.flags().lastFlag())) {
+            return Completion.completePlayers(args.flags().getIfPresent("o").map(Input::asString).orElse(""));
+        }
 
         if (args.sizeIs(1)) {
             return configuration.tools().complete(args.asString(0));
         }
 
         if (args.sizeIs(2)) {
-            var field = args.asString(1);
+            return completeField(args.asString(1));
+        }
 
-            if ("o".equalsIgnoreCase(args.flags().lastFlag())) {
-                return Completion.completePlayers(args.flags().getIfPresent("o").map(Input::asString).orElse(""));
-            }
-
-            switch (field.toLowerCase()) {
-                case "brushname" -> {
-                    return sbr.storageRegistry().activeStorage().brushes().complete(player, args.get(1).asString());
-                }
-                case "name" -> {
-                    var name = args.get(0).asString();
-                    CommandAssertions.isFalse(configuration.tools().byName(name).isPresent(), "Name is already taken.");
-                    return Completion.completeFreeInput(name, 32, "name");
-
-                }
-                case "usages" -> {
-                    return Completion.completeMinInt(args.flags().getIfPresent("u").map(Input::asString).orElse(""), 1);
-
-                }
-                case "permission" -> {
-                    return Collections.singletonList("permission");
-                }
-                default -> {
-                    return Collections.singletonList("Invalid field");
-                }
-            }
-
+        if (args.sizeIs(3)) {
+            return completeValue(player, args.asString(1), args.asString(2));
         }
 
         return Collections.emptyList();
+    }
+
+    private List<String> completeValue(Player player, String field, String value) throws CommandException {
+        return switch (field.toLowerCase(Locale.ROOT)) {
+            case "brushname" -> sbr.storageRegistry().activeStorage().brushes().complete(player, value);
+            case "name" -> {
+                CommandAssertions.isFalse(configuration.tools().byName(value).isPresent(), "error.nametaken");
+                yield Completion.completeFreeInput(value, 32, "name");
+            }
+            case "usages" -> completeUsages(value);
+            case "permission" -> Collections.singletonList("permission");
+            default -> Collections.emptyList();
+        };
+    }
+
+    /**
+     * Completes the name of a field that can be modified.
+     *
+     * @param field the field name typed so far
+     * @return the field names starting with the typed text, ignoring case
+     */
+    static List<String> completeField(String field) {
+        return Completion.complete(field, FIELDS);
+    }
+
+    /**
+     * Completes a usage limit, which is either 1 or more, or {@code -1} for no limit.
+     *
+     * @param value the value typed so far
+     * @return the possible values
+     * @throws CommandException if the value is no number of 1 or more
+     */
+    static List<String> completeUsages(String value) throws CommandException {
+        if (value.isEmpty()) return List.of(UNLIMITED, "1<");
+        if (UNLIMITED.startsWith(value)) return List.of(UNLIMITED);
+        return Completion.completeMinInt(value, 1);
     }
 }
