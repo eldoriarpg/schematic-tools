@@ -63,7 +63,7 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
             case "brushname" -> {
                 var storage = sbr.storageRegistry().activeStorage();
                 var container = BrushLoader.getContainer(player, storage, value.asString(), args);
-                container.get(value.asString()).thenAccept(brush -> {
+                container.get(BrushLoader.storedName(value.asString())).thenAccept(brush -> {
                     CommandAssertions.isTrue(brush.isPresent(), "error.nobrushfound");
                     tool.brush(container.owner(), brush.get());
                 }).whenComplete(Futures.whenComplete(suc -> {

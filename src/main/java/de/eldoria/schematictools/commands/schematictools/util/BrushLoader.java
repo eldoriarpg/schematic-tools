@@ -18,6 +18,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class BrushLoader {
+    private static final String GLOBAL_PREFIX = "g:";
     private static final Pattern UUID_PATTERN = Pattern.compile("[[:xdigit:]]{8}(-[[:xdigit:]]{4}){3}-[[:xdigit:]]{12}");
 
     public static BrushContainer getContainer(Player player, Storage storage, String name, Arguments args) {
@@ -33,6 +34,17 @@ public class BrushLoader {
         }
 
         return brushContainer;
+    }
+
+    /**
+     * Returns the name a brush is stored under. Global brushes are addressed with a {@code g:} prefix, which is not
+     * part of their stored name.
+     *
+     * @param name the brush name as entered, with or without the global prefix
+     * @return the name without the global prefix
+     */
+    public static String storedName(String name) {
+        return name.startsWith(GLOBAL_PREFIX) ? name.substring(GLOBAL_PREFIX.length()) : name;
     }
 
     private static Optional<UUID> getAsUUID(String uuid) {
