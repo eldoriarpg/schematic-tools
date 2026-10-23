@@ -44,6 +44,7 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
             var optToolMeta = SchematicTool.getCurrentTool(player);
             CommandAssertions.isTrue(optToolMeta.isPresent(), "error.notoolinhand");
             var optTool = configuration.tools().byId(optToolMeta.get().id());
+            CommandAssertions.isTrue(optTool.isPresent(), "error.toolnotfound");
             tool = optTool.get();
         } else {
             CommandAssertions.permission(player, false, Permissions.Info.ALL);
