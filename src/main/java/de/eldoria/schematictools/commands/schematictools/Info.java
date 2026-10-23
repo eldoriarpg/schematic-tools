@@ -28,15 +28,18 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
     private final Configuration configuration;
 
     public Info(Plugin plugin, Configuration configuration) {
-        super(plugin, CommandMeta.builder("info")
-                .addUnlocalizedArgument("name", false)
-                .withPermission(Permissions.Info.CURRENT, Permissions.Info.ALL)
-                .build());
+        super(
+                plugin,
+                CommandMeta.builder("info")
+                        .addUnlocalizedArgument("name", false)
+                        .withPermission(Permissions.Info.CURRENT, Permissions.Info.ALL)
+                        .build());
         this.configuration = configuration;
     }
 
     @Override
-    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         args.parseQuoted();
         Tool tool;
         if (args.isEmpty()) {
@@ -64,7 +67,8 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
             composer.text(tool.asInfoComponent());
         }
         if (player.hasPermission(Permissions.Info.ALL)) {
-            composer.newLine().text("<click:run_command:'/schematictools list'><change>[")
+            composer.newLine()
+                    .text("<click:run_command:'/schematictools list'><change>[")
                     .localeCode("words.back")
                     .text("]</click>");
         }
@@ -73,7 +77,8 @@ public class Info extends AdvancedCommand implements IPlayerTabExecutor {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         if (args.sizeIs(1)) {
             return configuration.tools().complete(args.get(0).asString());
         }

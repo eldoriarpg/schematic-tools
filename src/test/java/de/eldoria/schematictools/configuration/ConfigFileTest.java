@@ -53,7 +53,8 @@ class ConfigFileTest {
 
     private Configurations<ConfigFile> load(String content) throws IOException {
         Files.writeString(folder.resolve("config.yml"), content);
-        return Configurations.builder(Key.builder(Path.of("config.yml"), ConfigFile::new).build(), new YamlDataFormat())
+        return Configurations.builder(
+                        Key.builder(Path.of("config.yml"), ConfigFile::new).build(), new YamlDataFormat())
                 .setBase(folder)
                 .build();
     }

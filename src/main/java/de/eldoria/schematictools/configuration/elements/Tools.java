@@ -16,8 +16,7 @@ public class Tools {
     private List<Tool> tools = new ArrayList<>();
     private int currentId = 0;
 
-    public Tools() {
-    }
+    public Tools() {}
 
     public List<Tool> tools() {
         return tools;
@@ -48,13 +47,8 @@ public class Tools {
     }
 
     public List<String> complete(String name) {
-        if (name.isBlank()) return tools.stream()
-                .map(Tool::name)
-                .toList();
-        return tools.stream()
-                .map(Tool::name)
-                .filter(s -> s.startsWith(name))
-                .toList();
+        if (name.isBlank()) return tools.stream().map(Tool::name).toList();
+        return tools.stream().map(Tool::name).filter(s -> s.startsWith(name)).toList();
     }
 
     /**

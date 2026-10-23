@@ -28,15 +28,18 @@ public class Remove extends AdvancedCommand implements IPlayerTabExecutor {
     private final Configuration configuration;
 
     public Remove(Plugin plugin, Configuration configuration) {
-        super(plugin, CommandMeta.builder("remove")
-                .addUnlocalizedArgument("name", true)
-                .withPermission(Permissions.MANAGE)
-                .build());
+        super(
+                plugin,
+                CommandMeta.builder("remove")
+                        .addUnlocalizedArgument("name", true)
+                        .withPermission(Permissions.MANAGE)
+                        .build());
         this.configuration = configuration;
     }
 
     @Override
-    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         args.parseQuoted();
         var tool = configuration.tools().byName(args.get(0).asString());
         CommandAssertions.isTrue(tool.isPresent(), "error.toolnotfound");
@@ -47,7 +50,8 @@ public class Remove extends AdvancedCommand implements IPlayerTabExecutor {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         if (args.sizeIs(1)) return configuration.tools().complete(args.get(0).asString());
         return Collections.emptyList();
     }

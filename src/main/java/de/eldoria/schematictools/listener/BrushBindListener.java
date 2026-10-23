@@ -26,7 +26,8 @@ public class BrushBindListener implements Listener {
     private final Configuration configuration;
     private final MessageSender messageSender;
 
-    public BrushBindListener(Plugin plugin, SchematicBrushReborn sbr, Configuration configuration, MessageSender messageSender) {
+    public BrushBindListener(
+            Plugin plugin, SchematicBrushReborn sbr, Configuration configuration, MessageSender messageSender) {
         this.plugin = plugin;
         this.sbr = sbr;
         this.configuration = configuration;
@@ -77,7 +78,9 @@ public class BrushBindListener implements Listener {
         var optTool = configuration.tools().byId(toolMeta.id());
 
         if (optTool.isEmpty()) {
-            plugin.getLogger().warning("Brush Tool with ID " + toolMeta.id() + " of player " + player.getName() + " does not exist anymore.");
+            plugin.getLogger()
+                    .warning("Brush Tool with ID " + toolMeta.id() + " of player " + player.getName()
+                            + " does not exist anymore.");
             if (configuration.toolRemoval().isRemoveInvalidTools()) {
                 messageSender.sendActionBar(player, "<dark_red>Your tool broke.");
                 stack.setAmount(0);
@@ -97,20 +100,23 @@ public class BrushBindListener implements Listener {
 
         if (!player.hasPermission(tool.permission())) return;
 
-        tool.getBrush(sbr.storageRegistry().activeStorage())
-                .thenAccept(brush -> {
-                    if (brush.isEmpty()) {
-                        plugin.getLogger().warning("Tool " + tool + " of player " + player.getName() + " has an invalid brush.");
-                        if (configuration.toolRemoval().isRemoveInvalidBrushes()) {
-                            messageSender.sendActionBar(player, "<dark_red>Your tool broke.");
-                            stack.setAmount(0);
-                        }
-                        return;
-                    }
+        tool.getBrush(sbr.storageRegistry().activeStorage()).thenAccept(brush -> {
+            if (brush.isEmpty()) {
+                plugin.getLogger()
+                        .warning("Tool " + tool + " of player " + player.getName() + " has an invalid brush.");
+                if (configuration.toolRemoval().isRemoveInvalidBrushes()) {
+                    messageSender.sendActionBar(player, "<dark_red>Your tool broke.");
+                    stack.setAmount(0);
+                }
+                return;
+            }
 
-                    var build = brush.get().snapshot().load(player, sbr.brushSettingsRegistry(), sbr.schematics()).build(plugin, player);
-                    WorldEditBrush.setBrush(player, stack, build, tool.permission());
-                    messageSender.sendActionBar(player, "<gold>Activated schematic tool");
-                });
+            var build = brush.get()
+                    .snapshot()
+                    .load(player, sbr.brushSettingsRegistry(), sbr.schematics())
+                    .build(plugin, player);
+            WorldEditBrush.setBrush(player, stack, build, tool.permission());
+            messageSender.sendActionBar(player, "<gold>Activated schematic tool");
+        });
     }
 }

@@ -16,7 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 
 public class JacksonConfiguration extends JacksonConfig<ConfigFile> implements Configuration {
-    public static final Key<Tools> TOOLS = Key.builder(Path.of("tools.yml"), Tools::new).name("Tools").build();
+    public static final Key<Tools> TOOLS =
+            Key.builder(Path.of("tools.yml"), Tools::new).name("Tools").build();
 
     public JacksonConfiguration(@NotNull Plugin plugin) {
         super(plugin, Key.builder(Path.of("config.yml"), ConfigFile::new).build());

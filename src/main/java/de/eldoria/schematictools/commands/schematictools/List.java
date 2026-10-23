@@ -31,14 +31,15 @@ public class List extends AdvancedCommand implements IPlayerTabExecutor {
     private final Configuration configuration;
 
     public List(Plugin plugin, Configuration configuration) {
-        super(plugin, CommandMeta.builder("list")
-                .withPermission(Permissions.LIST)
-                .build());
+        super(
+                plugin,
+                CommandMeta.builder("list").withPermission(Permissions.LIST).build());
         this.configuration = configuration;
     }
 
     @Override
-    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         var tools = configuration.tools();
         var index = Math.clamp(args.asInt(0, 0), 0, Math.max(0, tools.pages(PAGE_SIZE) - 1));
         var composer = MessageComposer.create();
@@ -53,7 +54,9 @@ public class List extends AdvancedCommand implements IPlayerTabExecutor {
     }
 
     protected <T> void addEntries(MessageComposer composer, java.util.List<T> entries, Function<T, String> map) {
-        var page = entries.stream().map(entry -> String.format("  %s", map.apply(entry))).toList();
+        var page = entries.stream()
+                .map(entry -> String.format("  %s", map.apply(entry)))
+                .toList();
         composer.text(page).newLine();
     }
 

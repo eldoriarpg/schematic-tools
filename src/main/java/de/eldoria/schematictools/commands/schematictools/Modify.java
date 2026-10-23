@@ -40,19 +40,22 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
     private final Info info;
 
     public Modify(Plugin plugin, Configuration configuration, SchematicBrushReborn sbr, Info info) {
-        super(plugin, CommandMeta.builder("modify")
-                                 .addUnlocalizedArgument("name", true)
-                                 .addUnlocalizedArgument("field", true)
-                                 .addUnlocalizedArgument("value", true)
-                                 .withPermission(Permissions.MANAGE)
-                                 .build());
+        super(
+                plugin,
+                CommandMeta.builder("modify")
+                        .addUnlocalizedArgument("name", true)
+                        .addUnlocalizedArgument("field", true)
+                        .addUnlocalizedArgument("value", true)
+                        .withPermission(Permissions.MANAGE)
+                        .build());
         this.configuration = configuration;
         this.sbr = sbr;
         this.info = info;
     }
 
     @Override
-    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         args.parseQuoted();
         var optionalTool = configuration.tools().byName(args.asString(0));
 
@@ -65,16 +68,22 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
             case "brushname" -> {
                 var storage = sbr.storageRegistry().activeStorage();
                 var container = BrushLoader.getContainer(player, storage, value.asString(), args);
-                container.get(BrushLoader.storedName(value.asString())).thenAccept(brush -> {
-                    CommandAssertions.isTrue(brush.isPresent(), "error.nobrushfound");
-                    tool.brush(container.owner(), brush.get());
-                }).whenComplete(Futures.whenComplete(suc -> {
-                    configuration.save();
-                    info.showTool(player, tool);
-                }, err -> handleCommandError(player, err)));
+                container
+                        .get(BrushLoader.storedName(value.asString()))
+                        .thenAccept(brush -> {
+                            CommandAssertions.isTrue(brush.isPresent(), "error.nobrushfound");
+                            tool.brush(container.owner(), brush.get());
+                        })
+                        .whenComplete(Futures.whenComplete(
+                                suc -> {
+                                    configuration.save();
+                                    info.showTool(player, tool);
+                                },
+                                err -> handleCommandError(player, err)));
             }
             case "name" -> {
-                CommandAssertions.isFalse(configuration.tools().byName(value.asString()).isPresent(), "Name is already in use.");
+                CommandAssertions.isFalse(
+                        configuration.tools().byName(value.asString()).isPresent(), "Name is already in use.");
                 tool.name(value.asString());
                 configuration.save();
                 info.showTool(player, tool);
@@ -95,7 +104,6 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
             }
             default -> throw CommandException.message("error.invalidfieldname");
         }
-
     }
 
     private Optional<OfflinePlayer> playerByName(String name) {
@@ -108,11 +116,13 @@ public class Modify extends AdvancedCommand implements IPlayerTabExecutor {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         args.parseQuoted();
 
         if ("o".equalsIgnoreCase(args.flags().lastFlag())) {
-            return Completion.completePlayers(args.flags().getIfPresent("o").map(Input::asString).orElse(""));
+            return Completion.completePlayers(
+                    args.flags().getIfPresent("o").map(Input::asString).orElse(""));
         }
 
         if (args.sizeIs(1)) {

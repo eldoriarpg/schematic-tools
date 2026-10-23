@@ -19,6 +19,7 @@ public final class Permissions {
      * Default permission to use a schematic tool. Can be overridden via {@link WorldEditBrush#setBrush(Player, Brush, String)}
      */
     public static final String USE = perm(BASE, "use");
+
     public static final String LIST = perm(BASE, "list");
     public static final String MANAGE = perm(BASE, "modify");
     public static final String BIND = perm(BASE, "bind");
@@ -44,9 +45,6 @@ public final class Permissions {
         /**
          * Permission for seeing information about the all tools
          */
-
         public static final String ALL = perm(INFO, "all");
-
     }
-
 }

@@ -33,16 +33,19 @@ public class Bind extends AdvancedCommand implements IPlayerTabExecutor {
     private final BrushBindListener bindListener;
 
     public Bind(Plugin plugin, Configuration configuration, BrushBindListener bindListener) {
-        super(plugin, CommandMeta.builder("bind")
-                .addUnlocalizedArgument("name", true)
-                .withPermission(Permissions.BIND)
-                .build());
+        super(
+                plugin,
+                CommandMeta.builder("bind")
+                        .addUnlocalizedArgument("name", true)
+                        .withPermission(Permissions.BIND)
+                        .build());
         this.configuration = configuration;
         this.bindListener = bindListener;
     }
 
     @Override
-    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public void onCommand(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         var hand = player.getInventory().getItemInMainHand();
         CommandAssertions.isFalse(hand.getType() == Material.AIR, "error.noiteminhand");
 
@@ -58,7 +61,8 @@ public class Bind extends AdvancedCommand implements IPlayerTabExecutor {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args) throws CommandException {
+    public @Nullable List<String> onTabComplete(@NotNull Player player, @NotNull String alias, @NotNull Arguments args)
+            throws CommandException {
         if (args.sizeIs(1)) {
             return configuration.tools().complete(args.asString(0));
         }
