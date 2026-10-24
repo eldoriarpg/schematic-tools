@@ -20,7 +20,6 @@ import de.eldoria.schematictools.commands.schematictools.util.BrushLoader;
 import de.eldoria.schematictools.configuration.Configuration;
 import de.eldoria.schematictools.configuration.builder.SchematicToolBuilder;
 import de.eldoria.schematictools.util.Permissions;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Creates a new schematic tool configuration.
@@ -86,15 +84,6 @@ public class Create extends AdvancedCommand implements IPlayerTabExecutor {
                     configuration.save();
                 })
                 .whenComplete(Futures.whenComplete(Consumers.emptyConsumer(), err -> handleCommandError(player, err)));
-    }
-
-    private Optional<OfflinePlayer> playerByName(String name) {
-        for (var offlinePlayer : plugin().getServer().getOfflinePlayers()) {
-            if (name.equalsIgnoreCase(offlinePlayer.getName())) {
-                return Optional.of(offlinePlayer);
-            }
-        }
-        return Optional.empty();
     }
 
     @Override
